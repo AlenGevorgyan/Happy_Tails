@@ -10,7 +10,7 @@
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32"
-        tools:ignore="ReservedSystemPermission" /> <!-- Stack overflow-ica es tools-@ -->
+        tools:ignore="ReservedSystemPermission" /> <!-- Stack overflow-ica es tool-@ -->
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />

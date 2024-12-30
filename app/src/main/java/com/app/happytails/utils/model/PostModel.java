@@ -9,7 +9,7 @@ public class PostModel {
     private String dogName;
     private int dogAge;
     private String dogGender;  // String for easier management
-    private String imageBase64;  // Store image as a Base64-encoded string
+    private String imageUrl;  // Store image URL instead of Base64 string
     private Timestamp timestamp;  // Timestamp field to store the time when the post is created
     private int likeCount;
     private String description;  // New field for description
@@ -18,12 +18,12 @@ public class PostModel {
     public PostModel() {
     }
 
-    // Constructor with Base64 image and description
-    public PostModel(String userId, String username, String dogName, String imageBase64, Timestamp timestamp, int dogAge, String dogGender, String description) {
+    // Constructor with image URL and description
+    public PostModel(String userId, String username, String dogName, String imageUrl, Timestamp timestamp, int dogAge, String dogGender, String description) {
         this.userId = userId;
         this.username = username;
         this.dogName = dogName;
-        this.imageBase64 = imageBase64;  // Save image as Base64
+        this.imageUrl = imageUrl;  // Store image URL
         this.timestamp = timestamp;
         this.likeCount = 0;  // Default like count is set to 0
         this.dogAge = dogAge;
@@ -72,12 +72,12 @@ public class PostModel {
         this.dogGender = dogGender;
     }
 
-    public String getImageBase64() {
-        return imageBase64;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setImageBase64(String imageBase64) {
-        this.imageBase64 = imageBase64;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public Timestamp getTimestamp() {
@@ -118,7 +118,7 @@ public class PostModel {
                 ", dogName='" + dogName + '\'' +
                 ", dogAge=" + dogAge +
                 ", dogGender='" + dogGender + '\'' +
-                ", imageBase64='" + imageBase64 + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
                 ", timestamp=" + timestamp +
                 ", likeCount=" + likeCount +
                 ", description='" + description + '\'' +

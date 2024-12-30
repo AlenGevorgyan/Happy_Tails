@@ -67,7 +67,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
 
         // Glide to load image
         Glide.with(context.getApplicationContext())
-                .load(post.getImageBase64())
+                .load(post.getImageUrl())
                 .placeholder(R.drawable.user_icon) // Placeholder if imageUrl is null
                 .timeout(6500)
                 .into(holder.profileImage); // Loading profile image
@@ -92,8 +92,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
             userNameTv = itemView.findViewById(R.id.nameTv);
             timeTv = itemView.findViewById(R.id.timeTv);
             likeCountTv = itemView.findViewById(R.id.postAdapterLikeCount);
-            likeBtn = itemView.findViewById(R.id.likeBtnAdapter);
-            commentBtn = itemView.findViewById(R.id.commentBtnAdapter);
+//            likeBtn = itemView.findViewById(R.id.likeBtnAdapter);
+//            commentBtn = itemView.findViewById(R.id.commentBtnAdapter);
             dogName = itemView.findViewById(R.id.dogNameAdapter);
             dogAge = itemView.findViewById(R.id.dogAgeAdapter);
             dogGender = itemView.findViewById(R.id.dogGender);

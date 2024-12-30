@@ -92,33 +92,34 @@ public class ProfileFragment extends Fragment {
                 if (error != null) {
                     return;
                 }
-                assert value != null;
-                if (value.exists()) {
+                if (value != null && value.exists()) {
                     String name = value.getString("username");
                     Long followers = value.getLong("followers");
                     Long posts = value.getLong("posts");
                     String profileURL = value.getString("userImage");
                     String status = value.getString("status");
 
+                    // Set the profile data
                     nameTV.setText(name);
                     profile_toolbarName.setText(name);
-                    statusTv.setText(status);
-                    followingCountTv.setText(String.valueOf(followers));
-                    postCountTv.setText(String.valueOf(posts));
+                    statusTv.setText(status != null ? status : "No status available");
+                    followingCountTv.setText(String.valueOf(followers != null ? followers : 0));
+                    postCountTv.setText(String.valueOf(posts != null ? posts : 0));
 
-                    Glide.with(getContext().getApplicationContext())
+                    // Use Glide to load the profile image
+                    Glide.with(getContext())
                             .load(profileURL)
                             .placeholder(R.drawable.user_icon)
                             .timeout(6500)
                             .into(profileImage);
 
-                    // Set the follow button visibility depending on whether the current user is viewing their own profile
+                    // Hide the follow button for the current user's profile and show settings button
                     if (profileUid.equals(user.getUid())) {
-                        followRing.setVisibility(View.GONE); // Hide follow button for the user's own profile
-                        settingsBtn.setVisibility(View.VISIBLE); // Show settings button for the user's own profile
+                        followRing.setVisibility(View.GONE);
+                        settingsBtn.setVisibility(View.VISIBLE);
                     } else {
-                        followRing.setVisibility(View.VISIBLE); // Show follow button for other users
-                        settingsBtn.setVisibility(View.GONE); // Hide settings button for other users
+                        followRing.setVisibility(View.VISIBLE);
+                        settingsBtn.setVisibility(View.GONE);
                     }
                 }
             }
@@ -142,10 +143,10 @@ public class ProfileFragment extends Fragment {
 
             @Override
             protected void onBindViewHolder(@NonNull PostHolder holder, int position, @NonNull PostModel model) {
-                // If image is URL, load it using Glide
+                // Load image using Glide (image URL from Firestore)
                 Glide.with(holder.itemView.getContext())
-                        .load(model.getImageBase64()) // Assuming model.getImageUrl() is a URL string
-                        .placeholder(R.drawable.forgot_pass_ic)  // Add a placeholder
+                        .load(model.getImageUrl())
+                        .placeholder(R.drawable.forgot_pass_ic)
                         .into(holder.imageView);
 
                 // Format and display timestamp
@@ -171,7 +172,7 @@ public class ProfileFragment extends Fragment {
         public PostHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.dogPic);
-            timestampTv = itemView.findViewById(R.id.timeTv);  // Assuming you have a TextView to display timestamp
+            timestampTv = itemView.findViewById(R.id.timeTv);
         }
     }
 

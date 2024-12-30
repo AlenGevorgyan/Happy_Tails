@@ -127,7 +127,7 @@ public class PostFragment extends Fragment {
             @Override
             protected void onBindViewHolder(@NonNull PostHolder holder, int position, @NonNull PostModel model) {
                 // Load post image from Base64
-                String imageBase64 = model.getImageBase64();
+                String imageBase64 = model.getImageUrl();
                 Bitmap decodedImage = decodeBase64ToBitmap(imageBase64);
                 Glide.with(holder.itemView.getContext())
                         .load(decodedImage)
