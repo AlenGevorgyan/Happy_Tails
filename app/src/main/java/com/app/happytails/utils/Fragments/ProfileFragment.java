@@ -1,20 +1,19 @@
 package com.app.happytails.utils.Fragments;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.app.happytails.R;
@@ -31,15 +30,10 @@ import com.google.firebase.firestore.Query;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import de.hdodenhof.circleimageview.CircleImageView;
-import com.google.firebase.Timestamp;
-
-import android.util.Base64;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class ProfileFragment extends Fragment {
 
-    private TextView nameTV, profile_toolbarName, statusTv, followingCountTv, postCountTv;
+    private TextView profile_toolbarName, statusTv, followingCountTv, postCountTv, username;
     private CircleImageView profileImage;
     private ImageButton followRing, settingsBtn;
     private RecyclerView recyclerView;
@@ -54,7 +48,6 @@ public class ProfileFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_profile, container, false);
     }
 
@@ -64,12 +57,11 @@ public class ProfileFragment extends Fragment {
         init(view);
         loadBasicData();
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3)); // Adjust the number of columns as needed
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext())); // Changed to LinearLayoutManager for vertical orientation
         loadUserPosts();
     }
 
     private void init(View view) {
-        nameTV = view.findViewById(R.id.nameTV);
         profile_toolbarName = view.findViewById(R.id.UserName);
         statusTv = view.findViewById(R.id.statusTV);
         followingCountTv = view.findViewById(R.id.folower_countTv);
@@ -77,11 +69,12 @@ public class ProfileFragment extends Fragment {
         profileImage = view.findViewById(R.id.profileImage);
         followRing = view.findViewById(R.id.subscribeBtn);
         settingsBtn = view.findViewById(R.id.settingsIcon);
-        recyclerView = view.findViewById(R.id.recyclerViewProfile);  // RecyclerView for displaying posts
+        recyclerView = view.findViewById(R.id.recyclerViewProfile);
+        username = view.findViewById(R.id.nameTV);
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
-        profileUid = getArguments() != null ? getArguments().getString("profileUid") : user.getUid(); // Check if it's the current user's profile
+        profileUid = getArguments() != null ? getArguments().getString("profileUid") : user.getUid();
     }
 
     private void loadBasicData() {
@@ -90,6 +83,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (error != null) {
+                    Toast.makeText(getContext(), "Error loading profile data", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (value != null && value.exists()) {
@@ -99,21 +93,18 @@ public class ProfileFragment extends Fragment {
                     String profileURL = value.getString("userImage");
                     String status = value.getString("status");
 
-                    // Set the profile data
-                    nameTV.setText(name);
+                    username.setText(name);
                     profile_toolbarName.setText(name);
-                    statusTv.setText(status != null ? status : "No status available");
+                    statusTv.setText(status != null ? status : "No status");
                     followingCountTv.setText(String.valueOf(followers != null ? followers : 0));
                     postCountTv.setText(String.valueOf(posts != null ? posts : 0));
 
-                    // Use Glide to load the profile image
                     Glide.with(getContext())
                             .load(profileURL)
                             .placeholder(R.drawable.user_icon)
                             .timeout(6500)
                             .into(profileImage);
 
-                    // Hide the follow button for the current user's profile and show settings button
                     if (profileUid.equals(user.getUid())) {
                         followRing.setVisibility(View.GONE);
                         settingsBtn.setVisibility(View.VISIBLE);
@@ -127,52 +118,107 @@ public class ProfileFragment extends Fragment {
     }
 
     private void loadUserPosts() {
-        // Fetch posts from Firestore
-        DocumentReference reference = FirebaseFirestore.getInstance().collection("users").document(profileUid);
-        Query query = reference.collection("posts").orderBy("timestamp", Query.Direction.DESCENDING); // Sort by timestamp
+        Query query = FirebaseFirestore.getInstance()
+                .collection("users_posts")
+                .whereEqualTo("userId", profileUid);
+
         FirestoreRecyclerOptions<PostModel> options = new FirestoreRecyclerOptions.Builder<PostModel>()
-                .setQuery(query, PostModel.class).build();
+                .setQuery(query, PostModel.class)
+                .build();
 
         postAdapter = new FirestoreRecyclerAdapter<PostModel, PostHolder>(options) {
             @NonNull
             @Override
             public PostHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.post_item, parent, false);
+                // Inflate the profile_post layout
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.profile_post, parent, false);
                 return new PostHolder(view);
             }
 
             @Override
             protected void onBindViewHolder(@NonNull PostHolder holder, int position, @NonNull PostModel model) {
-                // Load image using Glide (image URL from Firestore)
-                Glide.with(holder.itemView.getContext())
-                        .load(model.getImageUrl())
-                        .placeholder(R.drawable.forgot_pass_ic)
-                        .into(holder.imageView);
-
-                // Format and display timestamp
-                Timestamp timestamp = model.getTimestamp();
-                if (timestamp != null) {
-                    Date date = timestamp.toDate();  // Convert Timestamp to Date
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-                    String formattedDate = sdf.format(date);
-                    holder.timestampTv.setText(formattedDate);  // Set formatted timestamp to TextView
-                }
+                holder.bind(model);
             }
-
         };
 
         recyclerView.setAdapter(postAdapter);
     }
 
-    private static class PostHolder extends RecyclerView.ViewHolder {
+    private class PostHolder extends RecyclerView.ViewHolder {
 
-        private ImageView imageView;
-        private TextView timestampTv;
+        private ImageView dogPic;
+        TextView dogName, dogGender, dogAge;
+        private Button viewGallery, viewVetPage, donate;
+        private ProgressBar funding;
 
         public PostHolder(@NonNull View itemView) {
             super(itemView);
-            imageView = itemView.findViewById(R.id.dogPic);
-            timestampTv = itemView.findViewById(R.id.timeTv);
+            dogName = itemView.findViewById(R.id.dog_name);
+            dogGender = itemView.findViewById(R.id.dog_sex);
+            dogAge = itemView.findViewById(R.id.dog_age);
+            dogPic = itemView.findViewById(R.id.profile_picture);
+            viewGallery = itemView.findViewById(R.id.gallery_button);
+            viewVetPage = itemView.findViewById(R.id.veterinary_button);
+            funding = itemView.findViewById(R.id.funding_bar);
+
+            viewGallery.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openGalleryFragment();
+                }
+            });
+
+            viewVetPage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openVetPageFragment();
+                }
+            });
+        }
+
+        public void bind(PostModel model) {
+            if (model.getPostMainImageUrl() != null) {
+                Glide.with(itemView.getContext())
+                        .load(model.getPostMainImageUrl())
+                        .placeholder(R.drawable.user_icon)
+                        .error(R.drawable.user_icon)
+                        .into(dogPic);
+            } else {
+                dogPic.setImageResource(R.drawable.user_icon);
+            }
+
+            // Handle null values for dog information
+//            funding.setIndeterminate();
+            dogName.setText(model.getDogName() != null ? model.getDogName() : "Unknown Name");
+            dogGender.setText(model.getDogGender() != null ? model.getDogGender() : "Unknown Gender");
+            dogAge.setText(model.getDogAge() != 0 ? "Estimated Age: " + String.valueOf(model.getDogAge()): "Unknown Age");
+        }
+
+        private void openGalleryFragment() {
+            // Code to open GalleryFragment
+            Fragment galleryFragment = new GalleryFragment();
+            Bundle args = new Bundle();
+            args.putString("profileUid", profileUid);
+            galleryFragment.setArguments(args);
+
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, galleryFragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
+
+        private void openVetPageFragment() {
+            // Code to open VetPageFragment
+            Fragment vetPageFragment = new VetPageFragment();
+            Bundle args = new Bundle();
+            args.putString("profileUid", profileUid);
+            vetPageFragment.setArguments(args);
+
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, vetPageFragment)
+                    .addToBackStack(null)
+                    .commit();
         }
     }
 

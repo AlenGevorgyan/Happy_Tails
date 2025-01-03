@@ -1,16 +1,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".utils.MainActivity">
 
     <!-- Top Toolbar -->
     <androidx.appcompat.widget.Toolbar
+        android:id="@+id/main_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:id="@+id/main_toolbar"
         android:layout_alignParentTop="true"
         app:contentInsetStart="0dp"
         app:contentInsetEnd="0dp"
@@ -42,23 +41,15 @@
                 android:backgroundTint="@color/primary_color"
                 android:src="@drawable/search_icon" />
         </RelativeLayout>
-
     </androidx.appcompat.widget.Toolbar>
-    <!-- Content Frame -->
+
+    <!-- Fragment Container View -->
     <FrameLayout
-        android:id="@+id/main_frame_layout"
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/devider"
-        android:layout_below="@id/main_toolbar">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/MainPosts"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp" />
-
-    </FrameLayout>
+        android:layout_below="@id/main_toolbar" />
 
     <!-- Divider -->
     <com.google.android.material.divider.MaterialDivider
@@ -74,10 +65,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+
         app:menu="@menu/bottom_navigation_menu"
         app:backgroundTint="@color/primary_color"
         app:itemIconTint="@color/black"
         app:itemTextColor="@color/black"/>
-
-
 </RelativeLayout>

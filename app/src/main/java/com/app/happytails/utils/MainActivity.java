@@ -11,23 +11,23 @@ import android.widget.ImageButton;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.app.happytails.R;
-import com.app.happytails.utils.Fragments.ChatFragment;
-import com.app.happytails.utils.Fragments.CreateFragment;
+import com.app.happytails.utils.Fragments.CreateFragment2;
 import com.app.happytails.utils.Fragments.HomeFragment;
+import com.app.happytails.utils.Fragments.ChatFragment;
 import com.app.happytails.utils.Fragments.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
 public class MainActivity extends AppCompatActivity {
 
-    BottomNavigationView bottomNav;
-    ImageButton searchButton;
-    ChatFragment chatFragment;
-    ProfileFragment profileFragment;
-    CreateFragment createFragment;
-    HomeFragment homeFragment;
+    private BottomNavigationView bottomNav;
+    private ImageButton searchButton;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,50 +46,58 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Initialize Toolbar
-        Toolbar toolbar = findViewById(R.id.main_toolbar);
+        toolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);  // Set your custom toolbar
-
-        // Initialize Fragments
-        chatFragment = new ChatFragment();
-        profileFragment = new ProfileFragment();
-        homeFragment = new HomeFragment();
-        createFragment = new CreateFragment();
 
         // Initialize Views
         bottomNav = findViewById(R.id.bottomNavigation);
         searchButton = findViewById(R.id.searchIcon);
 
         // Set OnClickListener for Search Button
-        searchButton.setOnClickListener(v -> {
-            startActivity(new Intent(MainActivity.this, SearchActivity.class));
-        });
+        searchButton.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, SearchActivity.class)));
+
+        // Set Default Fragment
+        loadFragment(new HomeFragment(), false);
 
         // Set Item Selection Listener for Bottom Navigation
         bottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                // Replace the Fragment based on the selected menu item
-                if(item.getItemId() == R.id.chatsMenu) {
-                    toolbar.setVisibility(View.VISIBLE);
-                    getSupportFragmentManager().beginTransaction().replace(R.id.main_frame_layout, chatFragment).commit();
-                }
-                if(item.getItemId() == R.id.homeMenu) {
-                    toolbar.setVisibility(View.VISIBLE);
-                    getSupportFragmentManager().beginTransaction().replace(R.id.main_frame_layout, homeFragment).commit();
-                }
-                if(item.getItemId() == R.id.profileMenu) {
-                    toolbar.setVisibility(View.GONE);
-                    getSupportFragmentManager().beginTransaction().replace(R.id.main_frame_layout, profileFragment).commit();
-                }
-                if(item.getItemId() == R.id.createPostMenu) {
-                    toolbar.setVisibility(View.GONE);
-                    getSupportFragmentManager().beginTransaction().replace(R.id.main_frame_layout, createFragment).commit();
-                }
+                handleNavigation(item);
                 return true;
             }
         });
+    }
 
-        // Set Default Selected Item
-        bottomNav.setSelectedItemId(R.id.homeMenu);
+    private void handleNavigation(MenuItem item) {
+        Fragment fragment = null;
+        int itemId = item.getItemId();
+        if (itemId == R.id.createPostMenu) {
+            fragment = new CreateFragment2();
+            loadFragment(fragment, true);
+        } else if (itemId == R.id.homeMenu) {
+            fragment = new HomeFragment();
+            loadFragment(fragment, false);
+        } else if (itemId == R.id.chatsMenu) {
+            fragment = new ChatFragment();
+            loadFragment(fragment, false);
+        } else if (itemId == R.id.profileMenu) {
+            fragment = new ProfileFragment();
+            loadFragment(fragment, true);
+        }
+    }
+
+    private void loadFragment(Fragment fragment, boolean disableToolbar) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+
+        if (disableToolbar) {
+            toolbar.setVisibility(View.GONE);
+        } else {
+            toolbar.setVisibility(View.VISIBLE);
+        }
     }
 }

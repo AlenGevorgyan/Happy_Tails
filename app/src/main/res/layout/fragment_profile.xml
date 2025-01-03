@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/off_white"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".utils.Fragments.ProfileFragment">
 
     <androidx.appcompat.widget.Toolbar
@@ -47,7 +47,6 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-
     <LinearLayout
         android:id="@+id/UserInfo"
         android:layout_width="match_parent"
@@ -59,7 +58,7 @@
             android:id="@+id/profileImage"
             android:layout_width="120dp"
             android:layout_height="120dp"
-            app:civ_border_color="@color/primary_color"
+            app:civ_border_color="@color/dark_secondary_color"
             app:civ_border_width="1dp"
             android:src="@drawable/user_icon"
             android:layout_margin="14dp"/>
@@ -96,7 +95,6 @@
                     android:textStyle="bold"
                     android:textColor="@color/black"/>
 
-
             </LinearLayout>
 
             <ImageButton
@@ -110,8 +108,6 @@
                 android:src="@drawable/follow_ic" />
 
         </RelativeLayout>
-
-
 
     </LinearLayout>
 
@@ -143,8 +139,6 @@
 
             </RelativeLayout>
 
-
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -160,7 +154,6 @@
                     android:layout_marginStart="70dp"/>
 
             </RelativeLayout>
-
 
         </LinearLayout>
 
@@ -187,10 +180,7 @@
 
             </RelativeLayout>
 
-
-
             <RelativeLayout
-
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="50">
@@ -205,7 +195,6 @@
                     android:layout_marginStart="70dp"/>
 
             </RelativeLayout>
-
 
         </LinearLayout>
 
@@ -223,7 +212,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewProfile"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
         android:layout_below="@id/profileDevider"
         android:padding="10dp"
         android:layout_marginVertical="20dp"/>

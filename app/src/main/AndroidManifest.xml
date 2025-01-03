@@ -10,16 +10,18 @@
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32"
-        tools:ignore="ReservedSystemPermission" /> <!-- Stack overflow-ica es tool-@ -->
+        tools:ignore="ReservedSystemPermission" />
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
+    <uses-permission android:name="EXTRA_ALLOW_MULTIPLE"/>
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
+        android:name=".utils.CloudinaryUtil"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -31,42 +33,42 @@
         android:theme="@style/Base.Theme.HappyTails"
         tools:targetApi="31">
 
-        <!-- App Activities -->
-        <activity
-            android:name=".utils.ForgetPassword"
-            android:exported="false" />
-        <activity
-            android:name=".utils.SearchActivity"
-            android:exported="false" />
-        <activity
-            android:name=".utils.SignInActivity"
-            android:exported="false" />
-        <activity
-            android:name=".utils.LoginOtpActivity"
-            android:exported="false" />
-        <activity
-            android:name=".utils.LoginActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:host="happytails.page.link"
-                    android:scheme="https" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".utils.SplashActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".utils.MainActivity"
-            android:exported="false" />
-    </application>
+    <!-- App Activities -->
+    <activity
+        android:name=".utils.ForgetPassword"
+        android:exported="false" />
+    <activity
+        android:name=".utils.SearchActivity"
+        android:exported="false" />
+    <activity
+        android:name=".utils.SignInActivity"
+        android:exported="false" />
+    <activity
+        android:name=".utils.LoginOtpActivity"
+        android:exported="false" />
+    <activity
+        android:name=".utils.LoginActivity"
+        android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data
+                android:host="happytails.page.link"
+                android:scheme="https" />
+        </intent-filter>
+    </activity>
+    <activity
+        android:name=".utils.SplashActivity"
+        android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+    </activity>
+    <activity
+        android:name=".utils.MainActivity"
+        android:exported="false" />
+</application>
 
-</manifest>
+    </manifest>

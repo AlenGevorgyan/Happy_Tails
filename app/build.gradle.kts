@@ -40,8 +40,10 @@ dependencies {
     // Firebase libraries
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-storage")
+
+    // Firebase UI
     implementation("com.firebaseui:firebase-ui-firestore:8.0.2")
-    implementation("com.google.firebase:firebase-storage:21.0.1")
 
     // Other dependencies
     implementation("com.google.android.material:material:1.10.0")
@@ -49,18 +51,16 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("com.karumi:dexter:6.2.3")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
     // Cloudinary
     implementation("com.cloudinary:cloudinary-android:3.0.2")
-    implementation("com.github.bumptech.glide:glide:4.16.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.navigation:navigation-fragment:2.7.7")
-    implementation("androidx.navigation:navigation-ui:2.7.7")
 
     // Image loading with Glide
-    implementation("com.github.bumptech.glide:glide:4.15.1")
-    implementation(libs.activity)
-    implementation(libs.firebase.crashlytics.buildtools)
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+
+    // Fragment KTX for Kotlin extensions
+    implementation("androidx.fragment:fragment-ktx:1.8.5")
 
     // Unit Testing Libraries
     testImplementation("junit:junit:4.13.2")
