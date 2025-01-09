@@ -31,40 +31,36 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
 
     @NonNull
     @Override
-    public PostAdapter.PostHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public PostHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.profile_post, parent, false);
-        return new PostHolder(view); // Returning the PostHolder
+        return new PostHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PostAdapter.PostHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PostHolder holder, int position) {
         PostModel post = list.get(position);
 
-        // Set profile picture
+        // Set profile picture using Glide
         Glide.with(context)
                 .load(post.getPostMainImageUrl()) // Assuming this is the main image URL field
                 .placeholder(R.drawable.user_icon)
                 .timeout(6500)
                 .into(holder.profileImage);
 
-        // Set dog name, age, and gender
-        holder.dogName.setText(post.getDogName());
-        holder.dogAge.setText(String.valueOf(post.getDogAge()));
-
-        // Gender
-        String gender = post.getDogGender().equalsIgnoreCase("Male") ? "Male" : "Female";
-        holder.dogGender.setText(gender);
+        // Set dog name, age, and gender with null checks and default values
+        holder.dogName.setText(post.getDogName() != null ? post.getDogName() : "Unknown");
+        holder.dogAge.setText(post.getDogAge() != 0 ? String.valueOf(post.getDogAge()) : "N/A");
+        holder.dogGender.setText(post.getDogGender() != null ? post.getDogGender() : "Unknown");
 
         // Setting supporters list
-        holder.supportersList.setText(post.getSupportersList().toString());
+        holder.supportersList.setText(post.getSupportersList() != null ? post.getSupportersList().toString() : "No supporters");
 
         // Monthly funding progress
         holder.fundingBar.setProgress(post.getFundingPercentage());
 
         // Set an OnClickListener for the veterinary button to display the last visit date
         holder.veterinaryBtn.setOnClickListener(v -> {
-            // Display the vet last visit date in the TextView
-            holder.vetLastVisitDate.setText(post.getVetLastVisitDate());
+            holder.vetLastVisitDate.setText(post.getVetLastVisitDate() != null ? post.getVetLastVisitDate() : "No data");
             holder.vetLastVisitDate.setVisibility(View.VISIBLE);
             Toast.makeText(context, "Vet last visit date: " + post.getVetLastVisitDate(), Toast.LENGTH_SHORT).show();
         });
