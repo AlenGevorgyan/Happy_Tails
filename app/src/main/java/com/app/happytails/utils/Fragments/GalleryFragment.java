@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.app.happytails.R;
 import com.app.happytails.utils.Adapters.GalleryAdapter;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -41,7 +42,7 @@ public class GalleryFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         galleryRecyclerView = view.findViewById(R.id.galleryRecyclerView);
         galleryRecyclerView.setHasFixedSize(true);
-        galleryRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        galleryRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
         backBtn = view.findViewById(R.id.backToProfileFromGallery);
 
         db = FirebaseFirestore.getInstance();
@@ -53,7 +54,7 @@ public class GalleryFragment extends Fragment {
     }
 
     private void loadGalleryImages() {
-        String currentUserId = getArguments() != null ? getArguments().getString("userId") : null;
+        String currentUserId = FirebaseAuth.getInstance().getUid();
         if (currentUserId == null) {
             Toast.makeText(getContext(), "Error loading gallery", Toast.LENGTH_SHORT).show();
             return;
@@ -68,17 +69,18 @@ public class GalleryFragment extends Fragment {
                         QuerySnapshot querySnapshot = task.getResult();
                         if (querySnapshot != null) {
                             for (QueryDocumentSnapshot document : querySnapshot) {
-                                List<String> postImageUrls = (List<String>) document.get("galleryImageUrls");
+                                ArrayList<String> postImageUrls = (ArrayList<String>) document.get("galleryImageUrls");
                                 if (postImageUrls != null) {
                                     imageUrls.addAll(postImageUrls);
                                 }
                             }
                         }
 
+                        Log.d("GalleryFragment", "Image URLs: " + imageUrls);
+
                         if (imageUrls.isEmpty()) {
                             Toast.makeText(getContext(), "No images to display", Toast.LENGTH_SHORT).show();
                         } else {
-                            // Initialize and set the adapter
                             galleryAdapter = new GalleryAdapter(getContext(), imageUrls);
                             galleryRecyclerView.setAdapter(galleryAdapter);
                         }

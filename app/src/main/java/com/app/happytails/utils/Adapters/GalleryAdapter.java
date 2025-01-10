@@ -37,7 +37,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
         Glide.with(context)
                 .load(imageUrl)
                 .placeholder(R.drawable.user_icon)
-                .error(R.drawable.forgot_pass_ic)
                 .timeout(6500)
                 .into(holder.imageView);
     }

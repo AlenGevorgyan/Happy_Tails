@@ -18,6 +18,7 @@ import com.app.happytails.utils.Adapters.SearchUserRecyclerAdapter;
 import com.app.happytails.utils.model.UserModel;
 import com.app.happytails.utils.FirebaseUtil;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.Query;
 
@@ -59,7 +60,8 @@ public class SearchActivity extends AppCompatActivity {
 
     private void setupSearchRecyclerView(String searchTerm) {
         Query query = FirebaseUtil.allUserCollectionReference().
-                whereGreaterThanOrEqualTo("username", searchTerm);
+                whereGreaterThanOrEqualTo("username", searchTerm)
+                .whereNotEqualTo("username", FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
 
         FirestoreRecyclerOptions<UserModel> options = new FirestoreRecyclerOptions.Builder<UserModel>()
                 .setQuery(query, UserModel.class).build();

@@ -1,6 +1,7 @@
 package com.app.happytails.utils.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PostModel {
@@ -17,12 +18,11 @@ public class PostModel {
     private String postMainImageUrl; // Main image URL of the post
     private List<String> galleryImageUrls; // List of gallery image URLs
     private int fundingPercentage; // Funding percentage for the post
-    private ArrayList<String> supportersList; // Supporters list
-    private String vetImage;
+    private List<String> supportersList; // Supporters list
+    private String vetImage; // Image URL of the vet
 
     // Default constructor required for Firestore
     public PostModel() {
-        // Initialize fields with default values
         this.userId = "";
         this.dogName = "";
         this.dogAge = 0;
@@ -33,9 +33,9 @@ public class PostModel {
         this.diagnosis = "";
         this.vetDoctorName = "";
         this.postMainImageUrl = "";
-        this.galleryImageUrls = new ArrayList<>();
+        this.galleryImageUrls = Collections.emptyList(); // Use empty list
         this.fundingPercentage = 0;
-        this.supportersList = new ArrayList<>();
+        this.supportersList = Collections.emptyList(); // Use empty list
         this.vetImage = "";
     }
 
@@ -43,7 +43,7 @@ public class PostModel {
     public PostModel(String userId, String dogName, int dogAge, String dogGender, String vetLastVisitDate,
                      String description, String vetClinicName, String diagnosis, String vetDoctorName,
                      String postMainImageUrl, List<String> galleryImageUrls, int fundingPercentage,
-                     ArrayList<String> supportersList, String vetImage) {
+                     List<String> supportersList, String vetImage) {
         this.userId = userId != null ? userId : "";
         this.dogName = dogName != null ? dogName : "";
         this.dogAge = dogAge;
@@ -54,17 +54,9 @@ public class PostModel {
         this.diagnosis = diagnosis != null ? diagnosis : "";
         this.vetDoctorName = vetDoctorName != null ? vetDoctorName : "";
         this.postMainImageUrl = postMainImageUrl != null ? postMainImageUrl : "";
-        this.galleryImageUrls = galleryImageUrls != null ? galleryImageUrls : new ArrayList<>();
+        this.galleryImageUrls = galleryImageUrls != null ? galleryImageUrls : Collections.emptyList();
         this.fundingPercentage = fundingPercentage;
-        this.supportersList = supportersList != null ? supportersList : new ArrayList<>();
-        this.vetImage = vetImage != null ? vetImage : "";
-    }
-
-    public String getVetImage() {
-        return vetImage;
-    }
-
-    public void setVetImage(String vetImage) {
+        this.supportersList = supportersList != null ? supportersList : Collections.emptyList();
         this.vetImage = vetImage != null ? vetImage : "";
     }
 
@@ -154,7 +146,7 @@ public class PostModel {
     }
 
     public void setGalleryImageUrls(List<String> galleryImageUrls) {
-        this.galleryImageUrls = galleryImageUrls != null ? galleryImageUrls : new ArrayList<>();
+        this.galleryImageUrls = galleryImageUrls != null ? galleryImageUrls : Collections.emptyList();
     }
 
     public int getFundingPercentage() {
@@ -165,12 +157,20 @@ public class PostModel {
         this.fundingPercentage = fundingPercentage;
     }
 
-    public ArrayList<String> getSupportersList() {
+    public List<String> getSupportersList() {
         return supportersList;
     }
 
-    public void setSupportersList(ArrayList<String> supportersList) {
-        this.supportersList = supportersList != null ? supportersList : new ArrayList<>();
+    public void setSupportersList(List<String> supportersList) {
+        this.supportersList = supportersList != null ? supportersList : Collections.emptyList();
+    }
+
+    public String getVetImage() {
+        return vetImage;
+    }
+
+    public void setVetImage(String vetImage) {
+        this.vetImage = vetImage != null ? vetImage : "";
     }
 
     @Override

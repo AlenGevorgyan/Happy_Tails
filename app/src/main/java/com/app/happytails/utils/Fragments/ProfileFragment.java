@@ -4,8 +4,11 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +18,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.app.happytails.R;
 import com.app.happytails.utils.model.PostModel;
 import com.bumptech.glide.Glide;
@@ -30,14 +32,16 @@ import com.google.firebase.firestore.Query;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import de.hdodenhof.circleimageview.CircleImageView;
+import java.util.ArrayList;
 
 public class ProfileFragment extends Fragment {
 
+    private static final String TAG = "ProfileFragment";
+
     private TextView profile_toolbarName, statusTv, followingCountTv, postCountTv, username;
     private CircleImageView profileImage;
-    private ImageButton followRing, settingsBtn;
     private RecyclerView recyclerView;
-
+    private ImageButton followBtn, settingsBtn;
     private FirebaseUser user;
     private FirestoreRecyclerAdapter<PostModel, PostHolder> postAdapter;
     private String profileUid;
@@ -57,7 +61,7 @@ public class ProfileFragment extends Fragment {
         init(view);
         loadBasicData();
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext())); // Changed to LinearLayoutManager for vertical orientation
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         loadUserPosts();
     }
 
@@ -67,10 +71,10 @@ public class ProfileFragment extends Fragment {
         followingCountTv = view.findViewById(R.id.folower_countTv);
         postCountTv = view.findViewById(R.id.post_counttv);
         profileImage = view.findViewById(R.id.profileImage);
-        followRing = view.findViewById(R.id.subscribeBtn);
-        settingsBtn = view.findViewById(R.id.settingsIcon);
         recyclerView = view.findViewById(R.id.recyclerViewProfile);
         username = view.findViewById(R.id.nameTV);
+        followBtn = view.findViewById(R.id.subscribeBtn);
+        settingsBtn = view.findViewById(R.id.settingsIcon);
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
@@ -84,8 +88,10 @@ public class ProfileFragment extends Fragment {
             public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (error != null) {
                     Toast.makeText(getContext(), "Error loading profile data", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Error loading profile data", error);
                     return;
                 }
+
                 if (value != null && value.exists()) {
                     String name = value.getString("username");
                     Long followers = value.getLong("followers");
@@ -99,19 +105,27 @@ public class ProfileFragment extends Fragment {
                     followingCountTv.setText(String.valueOf(followers != null ? followers : 0));
                     postCountTv.setText(String.valueOf(posts != null ? posts : 0));
 
-                    Glide.with(getContext())
-                            .load(profileURL)
-                            .placeholder(R.drawable.user_icon)
-                            .timeout(6500)
-                            .into(profileImage);
+                    if (profileURL != null && !profileURL.isEmpty()) {
+                        Log.d(TAG, "Profile image URL: " + profileURL);
+                        Glide.with(getContext())
+                                .load(profileURL)
+                                .placeholder(R.drawable.user_icon)
+                                .timeout(6500)
+                                .error(R.drawable.user_icon)
+                                .into(profileImage);
+                    } else {
+                        profileImage.setImageResource(R.drawable.user_icon);
+                    }
 
                     if (profileUid.equals(user.getUid())) {
-                        followRing.setVisibility(View.GONE);
+                        followBtn.setVisibility(View.GONE);
                         settingsBtn.setVisibility(View.VISIBLE);
                     } else {
-                        followRing.setVisibility(View.VISIBLE);
+                        followBtn.setVisibility(View.VISIBLE);
                         settingsBtn.setVisibility(View.GONE);
                     }
+                } else {
+                    Log.d(TAG, "No profile data found");
                 }
             }
         });
@@ -130,7 +144,6 @@ public class ProfileFragment extends Fragment {
             @NonNull
             @Override
             public PostHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                // Inflate the profile_post layout
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.profile_post, parent, false);
                 return new PostHolder(view);
@@ -149,8 +162,9 @@ public class ProfileFragment extends Fragment {
 
         private ImageView dogPic;
         TextView dogName, dogGender, dogAge;
-        private Button viewGallery, viewVetPage, donate;
         private ProgressBar funding;
+        private Button viewGalleryBtn;
+        private PostModel postModel;  // Add a PostModel field
 
         public PostHolder(@NonNull View itemView) {
             super(itemView);
@@ -158,29 +172,38 @@ public class ProfileFragment extends Fragment {
             dogGender = itemView.findViewById(R.id.dog_sex);
             dogAge = itemView.findViewById(R.id.dog_age);
             dogPic = itemView.findViewById(R.id.profile_picture);
-            viewGallery = itemView.findViewById(R.id.gallery_button);
-            viewVetPage = itemView.findViewById(R.id.veterinary_button);
             funding = itemView.findViewById(R.id.funding_bar);
+            viewGalleryBtn = itemView.findViewById(R.id.gallery_button);
 
-            viewGallery.setOnClickListener(new View.OnClickListener() {
+            viewGalleryBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    openGalleryFragment();
-                }
-            });
+                    if (postModel != null) {
+                        // Navigate to GalleryFragment
+                        GalleryFragment galleryFragment = new GalleryFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putStringArrayList("galleryImageUrls", new ArrayList<>(postModel.getGalleryImageUrls()));
+                        galleryFragment.setArguments(bundle);
 
-            viewVetPage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    openVetPageFragment();
+                        FragmentManager fragmentManager = getParentFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        fragmentTransaction.replace(R.id.fragment_container, galleryFragment);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
+                    } else {
+                        Toast.makeText(itemView.getContext(), "No gallery images available", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
         }
 
         public void bind(PostModel model) {
-            if (model.getPostMainImageUrl() != null) {
+            postModel = model;  // Assign the model to the PostModel field
+            String imageUrl = model.getPostMainImageUrl();
+            if (imageUrl != null && !imageUrl.isEmpty()) {
+                Log.d(TAG, "Post main image URL: " + imageUrl);
                 Glide.with(itemView.getContext())
-                        .load(model.getPostMainImageUrl())
+                        .load(imageUrl)
                         .placeholder(R.drawable.user_icon)
                         .error(R.drawable.user_icon)
                         .into(dogPic);
@@ -188,37 +211,10 @@ public class ProfileFragment extends Fragment {
                 dogPic.setImageResource(R.drawable.user_icon);
             }
 
-            // Handle null values for dog information
-//            funding.setIndeterminate();
             dogName.setText(model.getDogName() != null ? model.getDogName() : "Unknown Name");
             dogGender.setText(model.getDogGender() != null ? model.getDogGender() : "Unknown Gender");
-            dogAge.setText(model.getDogAge() != 0 ? "Estimated Age: " + String.valueOf(model.getDogAge()): "Unknown Age");
-        }
-
-        private void openGalleryFragment() {
-            // Code to open GalleryFragment
-            Fragment galleryFragment = new GalleryFragment();
-            Bundle args = new Bundle();
-            args.putString("profileUid", profileUid);
-            galleryFragment.setArguments(args);
-
-            getParentFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, galleryFragment)
-                    .addToBackStack(null)
-                    .commit();
-        }
-
-        private void openVetPageFragment() {
-            // Code to open VetPageFragment
-            Fragment vetPageFragment = new VetPageFragment();
-            Bundle args = new Bundle();
-            args.putString("profileUid", profileUid);
-            vetPageFragment.setArguments(args);
-
-            getParentFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, vetPageFragment)
-                    .addToBackStack(null)
-                    .commit();
+            dogAge.setText(model.getDogAge() != 0 ? "Estimated Age: " + model.getDogAge() : "Unknown Age");
+            funding.setProgress(model.getFundingPercentage());
         }
     }
 

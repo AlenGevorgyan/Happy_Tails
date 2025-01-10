@@ -1,6 +1,7 @@
 package com.app.happytails.utils.Adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
 
     private List<PostModel> list;
     private Context context;
+    private static final String TAG = "PostAdapter";
 
     public PostAdapter(Context context, List<PostModel> list) {
         this.context = context;
@@ -40,9 +42,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
     public void onBindViewHolder(@NonNull PostHolder holder, int position) {
         PostModel post = list.get(position);
 
+        // Log the URL
+        Log.d(TAG, "Loading image from URL: " + post.getPostMainImageUrl());
+
         // Set profile picture using Glide
         Glide.with(context)
-                .load(post.getPostMainImageUrl()) // Assuming this is the main image URL field
+                .load(post.getPostMainImageUrl())
                 .placeholder(R.drawable.user_icon)
                 .timeout(6500)
                 .into(holder.profileImage);
@@ -73,7 +78,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
 
     static class PostHolder extends RecyclerView.ViewHolder {
 
-        private ImageView profileImage; // ImageView for profile picture
+        private ImageView profileImage;
         private TextView dogName, dogAge, dogGender, vetLastVisitDate, supportersList;
         private ProgressBar fundingBar;
         private Button galleryBtn, veterinaryBtn, donationBtn;
@@ -81,14 +86,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
         public PostHolder(@NonNull View itemView) {
             super(itemView);
 
-            // Initialize all view components from the layout
-            profileImage = itemView.findViewById(R.id.profile_picture); // Adjusted for ImageView
+            profileImage = itemView.findViewById(R.id.profile_picture);
             dogName = itemView.findViewById(R.id.dog_name);
             dogAge = itemView.findViewById(R.id.dog_age);
             dogGender = itemView.findViewById(R.id.dog_sex);
-            vetLastVisitDate = itemView.findViewById(R.id.vet_last_visit_date); // Assuming this is part of the layout
-            supportersList = itemView.findViewById(R.id.supporters_list); // Assuming this is part of the layout
-            fundingBar = itemView.findViewById(R.id.funding_bar); // Monthly funding progress
+            vetLastVisitDate = itemView.findViewById(R.id.vet_last_visit_date);
+            supportersList = itemView.findViewById(R.id.supporters_list);
+            fundingBar = itemView.findViewById(R.id.funding_bar);
             galleryBtn = itemView.findViewById(R.id.gallery_button);
             veterinaryBtn = itemView.findViewById(R.id.veterinary_button);
             donationBtn = itemView.findViewById(R.id.donation_button);

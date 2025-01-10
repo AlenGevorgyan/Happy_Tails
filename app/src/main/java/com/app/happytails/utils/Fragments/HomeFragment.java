@@ -10,25 +10,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.app.happytails.R;
-import com.app.happytails.utils.Adapters.PostAdapter;
-import com.app.happytails.utils.model.PostModel;
+import com.app.happytails.utils.Adapters.HomeAdapter;
+import com.app.happytails.utils.model.HomeModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
 
-    private PostAdapter adapter;
+    private HomeAdapter adapter;
     private FirebaseUser user;
     private RecyclerView recyclerView;
-    private List<PostModel> list;
+    private List<HomeModel> list;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -37,7 +37,6 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
 
@@ -48,10 +47,10 @@ public class HomeFragment extends Fragment {
         init(view);
 
         list = new ArrayList<>();
-        adapter = new PostAdapter(getContext(), list);
+        adapter = new HomeAdapter(getContext(), list);
         recyclerView.setAdapter(adapter);
 
-        loadDatafromFirestore();
+        loadDataFromFirestore();
     }
 
     private void init(View view) {
@@ -63,10 +62,10 @@ public class HomeFragment extends Fragment {
         user = auth.getCurrentUser();
     }
 
-    private void loadDatafromFirestore() {
+    private void loadDataFromFirestore() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("posts") // Assuming posts are stored under a collection called 'posts'
-                .orderBy("timestamp") // You can order by timestamp if needed
+        db.collection("users_posts")
+                .whereNotEqualTo("userId", user.getUid())
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -76,7 +75,7 @@ public class HomeFragment extends Fragment {
                         if (value != null) {
                             list.clear();
                             for (DocumentSnapshot snapshot : value.getDocuments()) {
-                                PostModel post = snapshot.toObject(PostModel.class);
+                                HomeModel post = snapshot.toObject(HomeModel.class);
                                 list.add(post);
                             }
                             adapter.notifyDataSetChanged();
