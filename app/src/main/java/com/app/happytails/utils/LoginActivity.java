@@ -22,7 +22,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore firestore;
-    private EditText emailEditText, passwordEditText, usernameEditText;
+    private EditText emailEditText, passwordEditText, confirmPasswordEditText, usernameEditText;
     private ProgressBar progressBar;
     private Button loginButton;
     private ImageView backToSignIn;
@@ -37,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
 
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
+        confirmPasswordEditText = findViewById(R.id.passwordConfirmEditText);
         usernameEditText = findViewById(R.id.usernameEditText);
         progressBar = findViewById(R.id.LoginProc1);
         loginButton = findViewById(R.id.loginButton);
@@ -55,9 +56,10 @@ public class LoginActivity extends AppCompatActivity {
     private void createUserAndSendVerification() {
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
+        String confirmPassword = confirmPasswordEditText.getText().toString().trim(); // Get confirm password
         String username = usernameEditText.getText().toString().trim();
 
-        if (!validateInput(email, password, username)) return;
+        if (!validateInput(email, password, confirmPassword, username)) return;
 
         setInProgress(true);
 
@@ -75,14 +77,19 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    private boolean validateInput(String email, String password, String username) {
-        if (email.isEmpty() || password.isEmpty() || username.isEmpty()) {
+    private boolean validateInput(String email, String password, String confirmPassword, String username) {
+        if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || username.isEmpty()) {
             showToast("Please fill out all fields");
             return false;
         }
 
-        if (password.length() < 6) {
-            passwordEditText.setError("Your password should be at least 6 characters");
+        if (password.length() < 8) {
+            passwordEditText.setError("Your password should be at least 8 characters");
+            return false;
+        }
+
+        if (!password.equals(confirmPassword)) {
+            confirmPasswordEditText.setError("Passwords do not match");
             return false;
         }
 

@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import com.app.happytails.R;
 import com.app.happytails.utils.Adapters.GalleryAdapter;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -40,36 +39,42 @@ public class GalleryFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        // Initialize RecyclerView
         galleryRecyclerView = view.findViewById(R.id.galleryRecyclerView);
         galleryRecyclerView.setHasFixedSize(true);
-        galleryRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
+        galleryRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2)); // Adjust column count as needed
+
+        // Initialize back button
         backBtn = view.findViewById(R.id.backToProfileFromGallery);
-
-        db = FirebaseFirestore.getInstance();
-
         backBtn.setOnClickListener(v -> getParentFragmentManager().popBackStack());
 
-        // Load images from Firestore
-        loadGalleryImages();
+        // Initialize Firestore
+        db = FirebaseFirestore.getInstance();
+
+        // Get user ID from arguments
+        if (getArguments() != null && getArguments().containsKey("userId")) {
+            String userId = getArguments().getString("userId");
+            if (userId != null) {
+                loadGalleryImages(userId);
+            }
+        } else {
+            Toast.makeText(getContext(), "Error loading gallery", Toast.LENGTH_SHORT).show();
+        }
     }
 
-    private void loadGalleryImages() {
-        String currentUserId = FirebaseAuth.getInstance().getUid();
-        if (currentUserId == null) {
-            Toast.makeText(getContext(), "Error loading gallery", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
+    private void loadGalleryImages(String userId) {
         db.collection("users_posts")
-                .whereEqualTo("userId", currentUserId)
+                .whereEqualTo("userId", userId)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         imageUrls = new ArrayList<>();
                         QuerySnapshot querySnapshot = task.getResult();
+
                         if (querySnapshot != null) {
                             for (QueryDocumentSnapshot document : querySnapshot) {
-                                ArrayList<String> postImageUrls = (ArrayList<String>) document.get("galleryImageUrls");
+                                List<String> postImageUrls = (List<String>) document.get("galleryImageUrls");
                                 if (postImageUrls != null) {
                                     imageUrls.addAll(postImageUrls);
                                 }

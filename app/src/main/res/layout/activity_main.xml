@@ -33,10 +33,9 @@
 
             <ImageButton
                 android:id="@+id/searchIcon"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_alignParentEnd="true"
-                android:layout_marginEnd="21dp"
                 android:background="@drawable/circular_bg"
                 android:backgroundTint="@color/primary_color"
                 android:src="@drawable/search_icon" />

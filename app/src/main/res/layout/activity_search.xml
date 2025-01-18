@@ -69,7 +69,7 @@
             android:id="@+id/searchUserButton"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/search_icon"
+            android:src="@drawable/search_icon_s"
             android:layout_centerVertical="true"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:layout_alignParentEnd="true" />

@@ -16,8 +16,8 @@ import java.util.List;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryViewHolder> {
 
-    private final List<String> imageUrls;
-    private final Context context;
+    private Context context;
+    private List<String> imageUrls;
 
     public GalleryAdapter(Context context, List<String> imageUrls) {
         this.context = context;
@@ -27,17 +27,17 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
     @NonNull
     @Override
     public GalleryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.images_item, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.images_item, parent, false);
         return new GalleryViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull GalleryViewHolder holder, int position) {
         String imageUrl = imageUrls.get(position);
+
         Glide.with(context)
                 .load(imageUrl)
                 .placeholder(R.drawable.user_icon)
-                .timeout(6500)
                 .into(holder.imageView);
     }
 
@@ -47,7 +47,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
     }
 
     public static class GalleryViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageView;
+        private ImageView imageView;
 
         public GalleryViewHolder(@NonNull View itemView) {
             super(itemView);
