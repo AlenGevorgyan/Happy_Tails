@@ -34,32 +34,25 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Remove the default ActionBar
         if (getSupportActionBar() != null) {
-            getSupportActionBar().hide(); // Hide the default action bar
+            getSupportActionBar().hide();
         }
 
-        // Set Navigation Bar Color
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.setNavigationBarColor(getResources().getColor(R.color.primary_color));
         }
 
-        // Initialize Toolbar
         toolbar = findViewById(R.id.main_toolbar);
-        setSupportActionBar(toolbar);  // Set your custom toolbar
+        setSupportActionBar(toolbar);
 
-        // Initialize Views
         bottomNav = findViewById(R.id.bottomNavigation);
         searchButton = findViewById(R.id.searchIcon);
 
-        // Set OnClickListener for Search Button
         searchButton.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, SearchActivity.class)));
 
-        // Set Default Fragment
         loadFragment(new HomeFragment(), false);
 
-        // Set Item Selection Listener for Bottom Navigation
         bottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {

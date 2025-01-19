@@ -5,22 +5,22 @@ import java.util.List;
 
 public class HomeModel {
 
-    private String userId; // User ID of the post creator
-    private String username; // Username of post creator
-    private String profileImage; //Profile image of post creator
-    private String dogName; // Name of the dog
-    private int dogAge; // Age of the dog
-    private String dogGender; // Gender of the dog
-    private String vetLastVisitDate; // Last visit date to the veterinarian
-    private String description; // Description of the post
-    private String vetClinicName; // Name of the veterinary clinic
-    private String diagnosis; // Diagnosis from the vet visit
-    private String vetDoctorName; // Name of the veterinary doctor
-    private String postMainImageUrl; // Main image URL of the post
-    private List<String> galleryImageUrls; // List of gallery image URLs
-    private int fundingPercentage; // Funding percentage for the post
-    private List<String> supportersList; // Supporters list
-    private String vetImage; // Image URL of the vet
+    private String userId;
+    private String username;
+    private String profileImage;
+    private String dogName;
+    private int dogAge;
+    private String dogGender;
+    private String vetLastVisitDate;
+    private String description;
+    private String vetClinicName;
+    private String diagnosis;
+    private String vetDoctorName;
+    private String postMainImageUrl;
+    private List<String> galleryImageUrls;
+    private int fundingPercentage;
+    private List<String> supportersList;
+    private String vetImage;
 
     public HomeModel() {
         this.userId = "";

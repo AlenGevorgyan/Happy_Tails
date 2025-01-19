@@ -29,9 +29,8 @@ public class SignInActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_in);  // Make sure this matches your XML file's name
+        setContentView(R.layout.activity_sign_in);
 
-        // Initialize Firebase Auth
         firebaseAuth = FirebaseAuth.getInstance();
         emailEditText = findViewById(R.id.emailSignInEditText);
         passwordEditText = findViewById(R.id.passwordSignInEditText);
@@ -41,23 +40,19 @@ public class SignInActivity extends AppCompatActivity {
         testBtn = findViewById(R.id.testButton);
         forgotPass = findViewById(R.id.forgotTv);
 
-        // Handle Sign Up navigation
         signupText.setOnClickListener(v -> {
             Intent intent = new Intent(SignInActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
         });
 
-        // Handle Forgot Password navigation
         forgotPass.setOnClickListener(v -> {
             Intent intent = new Intent(SignInActivity.this, ForgetPassword.class);
             startActivity(intent);
         });
 
-        // Handle Sign In button click
         signInButton.setOnClickListener(v -> signInUser());
 
-        // Test Sign In (for testing purposes)
         testBtn.setOnClickListener(v -> testSignIn());
     }
 

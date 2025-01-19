@@ -78,7 +78,7 @@
 
                 <TextView
                     android:id="@+id/nameTV"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Username"
                     android:textSize="30sp"
@@ -95,16 +95,6 @@
                     android:textColor="@color/black"/>
 
             </LinearLayout>
-
-            <ImageButton
-                android:id="@+id/subscribeBtn"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_toRightOf="@id/name_about_Tv"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/follow_ic" />
 
         </RelativeLayout>
 
@@ -199,12 +189,22 @@
 
     </RelativeLayout>
 
+    <Button
+        android:id="@+id/subscribeBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:text="Follow"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/UserFolowersPosts"/>
+
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/profileDevider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@id/UserFolowersPosts"
-        android:layout_marginTop="30dp"
+        android:layout_below="@id/subscribeBtn"
+        android:layout_marginTop="25dp"
         android:layout_marginBottom="8dp"
         app:dividerColor="@color/gray" />
 

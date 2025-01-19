@@ -7,10 +7,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- Permissions for media and storage access -->
-    <uses-permission
-        android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32" />
-    <uses-permission android:name="EXTRA_ALLOW_MULTIPLE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -49,9 +46,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:host="happytails.page.link"
-                    android:scheme="https" />
+                <data android:host="happytails.page.link" android:scheme="https" />
             </intent-filter>
         </activity>
         <activity

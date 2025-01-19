@@ -57,15 +57,12 @@ public class CreateFragment2 extends Fragment {
         recyclerView = view.findViewById(R.id.dogGallery);
         nextButton = view.findViewById(R.id.postNextBtn);
 
-        // Setup RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         galleryAdapter = new GalleryAdapter(getContext(), galleryUrls);
         recyclerView.setAdapter(galleryAdapter);
 
-        // Handle button click to navigate
         nextButton.setOnClickListener(v -> handleNextButtonClick());
 
-        // Handle image selection
         dogPic.setOnClickListener(v -> openMainImageGallery());
         dogGalleryPic.setOnClickListener(v -> openGalleryForDogImages());
     }
@@ -118,12 +115,10 @@ public class CreateFragment2 extends Fragment {
 
         if (resultCode == getActivity().RESULT_OK && data != null) {
             if (requestCode == 1) {
-                // Handle single main image selection
                 mainImageUri = data.getData();
                 dogPic.setImageURI(mainImageUri);
 
             } else if (requestCode == 2) {
-                // Handle multiple images for the gallery
                 galleryUrls.clear();
                 if (data.getClipData() != null) {
                     int count = data.getClipData().getItemCount();
@@ -135,7 +130,6 @@ public class CreateFragment2 extends Fragment {
                     galleryUrls.add(data.getData().toString());
                 }
 
-                // Notify the adapter that the data has changed
                 galleryAdapter.notifyDataSetChanged();
             }
         }

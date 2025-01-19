@@ -1,6 +1,7 @@
 package com.app.happytails.utils.Fragments;
 
 import android.Manifest;
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -32,6 +34,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Map;
 
 public class CreateFragment extends Fragment {
@@ -50,11 +53,10 @@ public class CreateFragment extends Fragment {
     private static final int IMAGE_PICK_CODE = 1000;
     private static final int PERMISSION_REQUEST_CODE = 2000;
 
-    // Additional fields from CreateFragment2
     private String dogName, dogAge, dogGender, description;
     private Uri mainImageUri;
     private ArrayList<Uri> galleryUris;
-    private ArrayList<String> supportersList; // Added field for supporters list
+    private ArrayList<String> supportersList;
 
     public CreateFragment() {
         // Required empty public constructor
@@ -65,7 +67,6 @@ public class CreateFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_create2, container, false);
 
-        // Initialize views
         vetClinicName = view.findViewById(R.id.vetClinicName);
         vetDoctorName = view.findViewById(R.id.vetDoctorName);
         vetVisitDate = view.findViewById(R.id.vetVisitDate);
@@ -75,6 +76,8 @@ public class CreateFragment extends Fragment {
 
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+
+        vetVisitDate.setOnClickListener(v -> showDatePickerDialog());
 
         vetPic.setOnClickListener(v -> requestStoragePermission());
 
@@ -98,23 +101,38 @@ public class CreateFragment extends Fragment {
         return view;
     }
 
+    private void showDatePickerDialog() {
+        final Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                getContext(),
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        vetVisitDate.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
+                    }
+                },
+                year, month, day);
+        datePickerDialog.show();
+    }
+
     private void requestStoragePermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            // For Android 13 and above
             if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_MEDIA_IMAGES}, PERMISSION_REQUEST_CODE);
             } else {
                 selectImage();
             }
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            // For Android 6.0 (Marshmallow) to Android 12
             if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
             } else {
                 selectImage();
             }
         } else {
-            // For Android versions below 6.0
             selectImage();
         }
     }
@@ -131,16 +149,13 @@ public class CreateFragment extends Fragment {
 
         if (resultCode == getActivity().RESULT_OK && data != null && data.getData() != null) {
             if (requestCode == IMAGE_PICK_CODE) {
-                // Get the selected image URI
                 imageUri = data.getData();
-                // Set the selected image to the ImageView
                 vetPic.setImageURI(imageUri);
             }
         }
     }
 
     private void uploadVetImage() {
-        // Upload vet image
         MediaManager.get().upload(imageUri)
                 .unsigned("vet_uploads")
                 .callback(new UploadCallback() {
@@ -187,7 +202,6 @@ public class CreateFragment extends Fragment {
                             public void onSuccess(String requestId, Map resultData) {
                                 galleryImageUrls.add(resultData.get("url").toString());
                                 if (galleryImageUrls.size() == galleryUris.size()) {
-                                    // After all gallery images are uploaded, upload the main image
                                     uploadMainImage();
                                 }
                             }
@@ -203,7 +217,6 @@ public class CreateFragment extends Fragment {
                         }).dispatch();
             }
         } else {
-            // If no gallery images, directly upload the main image
             uploadMainImage();
         }
     }
@@ -252,7 +265,6 @@ public class CreateFragment extends Fragment {
             return;
         }
 
-        // Create a new PostModel object
         PostModel post = new PostModel(
                 FirebaseAuth.getInstance().getCurrentUser().getUid(),
                 dogName,

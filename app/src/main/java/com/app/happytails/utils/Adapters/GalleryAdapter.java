@@ -1,6 +1,7 @@
 package com.app.happytails.utils.Adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +17,9 @@ import java.util.List;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryViewHolder> {
 
-    private Context context;
     private List<String> imageUrls;
+    private Context context;
+    private static final String TAG = "GalleryAdapter";
 
     public GalleryAdapter(Context context, List<String> imageUrls) {
         this.context = context;
@@ -34,11 +36,18 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
     @Override
     public void onBindViewHolder(@NonNull GalleryViewHolder holder, int position) {
         String imageUrl = imageUrls.get(position);
+        Log.d(TAG, "Loading image from URL: " + imageUrl);
 
-        Glide.with(context)
-                .load(imageUrl)
-                .placeholder(R.drawable.user_icon)
-                .into(holder.imageView);
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            Glide.with(context)
+                    .load(imageUrl)
+                    .placeholder(R.drawable.user_icon)
+                    .error(R.drawable.user_icon)
+                    .timeout(6500)
+                    .into(holder.imageView);
+        } else {
+            holder.imageView.setImageResource(R.drawable.user_icon);
+        }
     }
 
     @Override
@@ -46,7 +55,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
         return imageUrls.size();
     }
 
-    public static class GalleryViewHolder extends RecyclerView.ViewHolder {
+    static class GalleryViewHolder extends RecyclerView.ViewHolder {
+
         private ImageView imageView;
 
         public GalleryViewHolder(@NonNull View itemView) {
