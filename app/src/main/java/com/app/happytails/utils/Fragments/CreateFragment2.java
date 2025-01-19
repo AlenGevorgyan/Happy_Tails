@@ -61,8 +61,8 @@ public class CreateFragment2 extends Fragment {
         galleryAdapter = new GalleryAdapter(getContext(), galleryUrls);
         recyclerView.setAdapter(galleryAdapter);
 
+        // Set up button click listeners
         nextButton.setOnClickListener(v -> handleNextButtonClick());
-
         dogPic.setOnClickListener(v -> openMainImageGallery());
         dogGalleryPic.setOnClickListener(v -> openGalleryForDogImages());
     }
@@ -129,7 +129,6 @@ public class CreateFragment2 extends Fragment {
                 } else if (data.getData() != null) {
                     galleryUrls.add(data.getData().toString());
                 }
-
                 galleryAdapter.notifyDataSetChanged();
             }
         }

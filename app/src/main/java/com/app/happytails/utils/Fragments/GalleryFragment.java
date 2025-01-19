@@ -52,9 +52,11 @@ public class GalleryFragment extends Fragment {
                 galleryAdapter = new GalleryAdapter(getContext(), imageUrls);
                 galleryRecyclerView.setAdapter(galleryAdapter);
             } else {
+                Log.d(TAG, "No images to display");
                 Toast.makeText(getContext(), "No images to display", Toast.LENGTH_SHORT).show();
             }
         } else {
+            Log.d(TAG, "Error loading gallery");
             Toast.makeText(getContext(), "Error loading gallery", Toast.LENGTH_SHORT).show();
         }
     }

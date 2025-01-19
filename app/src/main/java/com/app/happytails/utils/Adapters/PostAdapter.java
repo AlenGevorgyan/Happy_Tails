@@ -25,6 +25,8 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class PostAdapter extends FirestoreRecyclerAdapter<PostModel, PostAdapter.PostViewHolder> {
 
     private Context context;
@@ -92,7 +94,7 @@ public class PostAdapter extends FirestoreRecyclerAdapter<PostModel, PostAdapter
 
     static class PostViewHolder extends RecyclerView.ViewHolder {
 
-        private ImageView dogPic;
+        private CircleImageView dogPic;
         private TextView dogName, dogAge, dogGender, vetLastVisitDate, supportersList;
         private ProgressBar fundingBar;
         private Button galleryBtn, veterinaryBtn, donationBtn;

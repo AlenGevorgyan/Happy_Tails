@@ -29,7 +29,10 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder> {
 
@@ -65,12 +68,12 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
                     .timeout(6500)
                     .into(holder.dogPic);
         } else {
-            holder.dogPic.setImageResource(R.drawable.user_icon);
+            holder.dogPic.setImageResource(R.drawable.baseline_add_24);
         }
 
         holder.dogName.setText(post.getDogName() != null ? post.getDogName() : "Unknown Dog");
-        holder.dogAge.setText("Estimated Age: " + (post.getDogAge() != 0 ? String.valueOf(post.getDogAge()) : "N/A"));
-        holder.dogGender.setText("Gender: " + (post.getDogGender() != null ? post.getDogGender() : "Unknown Gender"));
+        holder.dogAge.setText(post.getDogAge() != 0 ? String.valueOf(post.getDogAge()) : "N/A");
+        holder.dogGender.setText(post.getDogGender() != null ? post.getDogGender() : "Unknown Gender");
         holder.supportersList.setText(post.getSupportersList() != null ? post.getSupportersList().toString() : "No supporters");
         holder.fundingBar.setProgress(post.getFundingPercentage());
 
@@ -130,7 +133,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         holder.galleryBtn.setOnClickListener(v -> {
             GalleryFragment galleryFragment = new GalleryFragment();
             Bundle args = new Bundle();
-            args.putString("userId", post.getUserId());
+            args.putStringArrayList("galleryImageUrls", new ArrayList<>(post.getGalleryImageUrls()));
             galleryFragment.setArguments(args);
 
             if (context instanceof AppCompatActivity) {
@@ -151,7 +154,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
     static class HomeViewHolder extends RecyclerView.ViewHolder {
 
-        private ImageView profileImage, dogPic;
+        private CircleImageView profileImage, dogPic;
         private TextView username, dogName, dogAge, dogGender, vetLastVisitDate, supportersList;
         private ProgressBar fundingBar;
         private Button galleryBtn, veterinaryBtn, donationBtn;

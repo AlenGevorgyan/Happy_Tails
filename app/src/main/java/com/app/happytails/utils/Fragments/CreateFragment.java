@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +26,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.app.happytails.R;
-import com.app.happytails.utils.FirebaseUtil;
 import com.app.happytails.utils.model.PostModel;
 import com.cloudinary.android.MediaManager;
 import com.cloudinary.android.callback.ErrorInfo;
@@ -58,6 +58,8 @@ public class CreateFragment extends Fragment {
     private ArrayList<Uri> galleryUris;
     private ArrayList<String> supportersList;
 
+    private static final String TAG = "CreateFragment";
+
     public CreateFragment() {
         // Required empty public constructor
     }
@@ -67,6 +69,7 @@ public class CreateFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_create2, container, false);
 
+        // Initialize UI elements
         vetClinicName = view.findViewById(R.id.vetClinicName);
         vetDoctorName = view.findViewById(R.id.vetDoctorName);
         vetVisitDate = view.findViewById(R.id.vetVisitDate);
@@ -83,19 +86,24 @@ public class CreateFragment extends Fragment {
 
         createPostButton.setOnClickListener(v -> uploadVetImage());
 
+        // Retrieve data passed from CreateFragment2
         if (getArguments() != null) {
             dogName = getArguments().getString("dogName");
             dogAge = getArguments().getString("dogAge");
             dogGender = getArguments().getString("dogGender");
             description = getArguments().getString("description");
-            mainImageUri = getArguments().getParcelable("mainImageUri");
-            galleryUris = getArguments().getParcelableArrayList("galleryUris");
-
+            mainImageUri = Uri.parse(getArguments().getString("mainImageUri"));
+            galleryUris = new ArrayList<>();
+            ArrayList<String> galleryUrls = getArguments().getStringArrayList("galleryUrls");
+            if (galleryUrls != null) {
+                for (String url : galleryUrls) {
+                    galleryUris.add(Uri.parse(url));
+                }
+            }
             Toast.makeText(getContext(), "Data received: " + dogName, Toast.LENGTH_SHORT).show();
         }
 
         supportersList = new ArrayList<>();
-
         galleryImageUrls = new ArrayList<>();
 
         return view;
@@ -109,12 +117,7 @@ public class CreateFragment extends Fragment {
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 getContext(),
-                new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        vetVisitDate.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
-                    }
-                },
+                (view, year1, month1, dayOfMonth) -> vetVisitDate.setText(dayOfMonth + "/" + (month1 + 1) + "/" + year1),
                 year, month, day);
         datePickerDialog.show();
     }
@@ -156,32 +159,41 @@ public class CreateFragment extends Fragment {
     }
 
     private void uploadVetImage() {
-        MediaManager.get().upload(imageUri)
-                .unsigned("vet_uploads")
-                .callback(new UploadCallback() {
-                    @Override
-                    public void onStart(String requestId) {
-                    }
+        if (imageUri != null) {
+            MediaManager.get().upload(imageUri)
+                    .unsigned("vet_uploads")
+                    .callback(new UploadCallback() {
+                        @Override
+                        public void onStart(String requestId) {
+                            Log.d(TAG, "Vet image upload started");
+                        }
 
-                    @Override
-                    public void onProgress(String requestId, long bytes, long totalBytes) {
-                    }
+                        @Override
+                        public void onProgress(String requestId, long bytes, long totalBytes) {
+                            // Can add progress indication here if needed
+                        }
 
-                    @Override
-                    public void onSuccess(String requestId, Map resultData) {
-                        vetImageUrl = resultData.get("url").toString();
-                        uploadGalleryImages();
-                    }
+                        @Override
+                        public void onSuccess(String requestId, Map resultData) {
+                            vetImageUrl = resultData.get("url").toString();
+                            Log.d(TAG, "Vet image upload successful: " + vetImageUrl);
+                            uploadGalleryImages();
+                        }
 
-                    @Override
-                    public void onError(String requestId, ErrorInfo error) {
-                        Toast.makeText(getContext(), "Error uploading vet image", Toast.LENGTH_SHORT).show();
-                    }
+                        @Override
+                        public void onError(String requestId, ErrorInfo error) {
+                            Toast.makeText(getContext(), "Error uploading vet image", Toast.LENGTH_SHORT).show();
+                            Log.e(TAG, "Error uploading vet image: " + error.getDescription());
+                        }
 
-                    @Override
-                    public void onReschedule(String requestId, ErrorInfo error) {
-                    }
-                }).dispatch();
+                        @Override
+                        public void onReschedule(String requestId, ErrorInfo error) {
+                            // Handle reschedule if needed
+                        }
+                    }).dispatch();
+        } else {
+            uploadGalleryImages();
+        }
     }
 
     private void uploadGalleryImages() {
@@ -192,15 +204,19 @@ public class CreateFragment extends Fragment {
                         .callback(new UploadCallback() {
                             @Override
                             public void onStart(String requestId) {
+                                Log.d(TAG, "Gallery image upload started");
                             }
 
                             @Override
                             public void onProgress(String requestId, long bytes, long totalBytes) {
+                                // Can add progress indication here if needed
                             }
 
                             @Override
                             public void onSuccess(String requestId, Map resultData) {
-                                galleryImageUrls.add(resultData.get("url").toString());
+                                String galleryUrl = resultData.get("url").toString();
+                                galleryImageUrls.add(galleryUrl);
+                                Log.d(TAG, "Gallery image upload successful: " + galleryUrl);
                                 if (galleryImageUrls.size() == galleryUris.size()) {
                                     uploadMainImage();
                                 }
@@ -209,10 +225,12 @@ public class CreateFragment extends Fragment {
                             @Override
                             public void onError(String requestId, ErrorInfo error) {
                                 Toast.makeText(getContext(), "Error uploading gallery image", Toast.LENGTH_SHORT).show();
+                                Log.e(TAG, "Error uploading gallery image: " + error.getDescription());
                             }
 
                             @Override
                             public void onReschedule(String requestId, ErrorInfo error) {
+                                // Handle reschedule if needed
                             }
                         }).dispatch();
             }
@@ -228,25 +246,30 @@ public class CreateFragment extends Fragment {
                     .callback(new UploadCallback() {
                         @Override
                         public void onStart(String requestId) {
+                            Log.d(TAG, "Main image upload started");
                         }
 
                         @Override
                         public void onProgress(String requestId, long bytes, long totalBytes) {
+                            // Can add progress indication here if needed
                         }
 
                         @Override
                         public void onSuccess(String requestId, Map resultData) {
                             postMainImageUrl = resultData.get("url").toString();
+                            Log.d(TAG, "Main image upload successful: " + postMainImageUrl);
                             savePostToFirestore();
                         }
 
                         @Override
                         public void onError(String requestId, ErrorInfo error) {
                             Toast.makeText(getContext(), "Error uploading main image", Toast.LENGTH_SHORT).show();
+                            Log.e(TAG, "Error uploading main image: " + error.getDescription());
                         }
 
                         @Override
                         public void onReschedule(String requestId, ErrorInfo error) {
+                            // Handle reschedule if needed
                         }
                     }).dispatch();
         } else {
