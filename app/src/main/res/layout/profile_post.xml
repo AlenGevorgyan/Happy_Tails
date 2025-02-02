@@ -84,23 +84,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="View Gallery" />
-
-    <!-- Button to View Veterinary Page -->
-    <Button
-        android:id="@+id/veterinary_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="View Veterinary Page" />
-
-    <!-- Button to Donate -->
-    <Button
-        android:id="@+id/donation_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Donate Now" />
+        android:text="View profile" />
 
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/profileDevider"

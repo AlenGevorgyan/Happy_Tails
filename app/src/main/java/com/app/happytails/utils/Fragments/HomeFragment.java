@@ -15,11 +15,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.app.happytails.R;
 import com.app.happytails.utils.Adapters.HomeAdapter;
 import com.app.happytails.utils.model.HomeModel;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
@@ -31,7 +33,8 @@ public class HomeFragment extends Fragment {
     private HomeAdapter homeAdapter;
     private List<HomeModel> postList;
     private FirebaseFirestore db;
-    private CollectionReference postsCollection;
+    private CollectionReference dogsCollection;
+    private ListenerRegistration dogsListener;
 
     private static final String TAG = "HomeFragment";
 
@@ -47,7 +50,7 @@ public class HomeFragment extends Fragment {
         recyclerView.setAdapter(homeAdapter);
 
         db = FirebaseFirestore.getInstance();
-        postsCollection = db.collection("users_posts");
+        dogsCollection = db.collection("dogs");
 
         loadPosts();
 
@@ -55,23 +58,81 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadPosts() {
-        postsCollection.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        dogsListener = dogsCollection.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                 if (e != null) {
-                    Log.w(TAG, "Listen failed.", e);
+                    Log.w(TAG, "Firestore listen failed.", e);
                     return;
                 }
 
-                if (queryDocumentSnapshots != null) {
+                if (queryDocumentSnapshots != null && !queryDocumentSnapshots.isEmpty()) {
                     postList.clear();
                     for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
-                        HomeModel post = doc.toObject(HomeModel.class);
-                        postList.add(post);
+                        HomeModel post = mapDocumentToHomeModel(doc);
+                        if (post != null) {
+                            postList.add(post);
+                        }
                     }
                     homeAdapter.notifyDataSetChanged();
+                } else {
+                    Log.d(TAG, "No documents found in the 'dogs' collection.");
                 }
             }
         });
+    }
+
+    private HomeModel mapDocumentToHomeModel(DocumentSnapshot doc) {
+        try {
+            // Assign Firestore document ID to dogId
+            String dogId = doc.getId();
+
+            // Fetch all values safely
+            String creator = doc.getString("creator");
+            String dogName = doc.getString("dogName");
+            String dogGender = doc.getString("dogGender");
+            int dogAge = doc.contains("dogAge") ? doc.getLong("dogAge").intValue() : 0;
+            String description = doc.getString("description");
+            String mainImageUrl = doc.getString("mainImage");
+            String diagnosis = doc.getString("diagnosis");
+            String clinicName = doc.getString("clinicName");
+            String doctorName = doc.getString("doctorName");
+            String vetLastVisitDate = doc.getString("vetLastVisitDate");
+
+            // Get gallery images safely
+            ArrayList<String> galleryImageUrls = doc.contains("galleryImages") ?
+                    (ArrayList<String>) doc.get("galleryImages") : new ArrayList<>();
+
+            // Funding progress
+            int fundingProgress = doc.contains("fundingPercentage") ?
+                    doc.getLong("fundingPercentage").intValue() : 0;
+
+            // Supporters list
+            ArrayList<String> supporters = doc.contains("supporters") ?
+                    (ArrayList<String>) doc.get("supporters") : new ArrayList<>();
+
+            // Return a properly mapped HomeModel
+            return new HomeModel(
+                    creator,
+                    dogId,
+                    dogAge,
+                    dogGender,
+                    dogName,
+                    fundingProgress,
+                    mainImageUrl,
+                    supporters
+            );
+        } catch (Exception e) {
+            Log.e(TAG, "Error mapping Firestore document to HomeModel: " + e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (dogsListener != null) {
+            dogsListener.remove();
+        }
     }
 }

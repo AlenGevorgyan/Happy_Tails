@@ -1,64 +1,49 @@
 package com.app.happytails.utils.Fragments;
 
-import android.Manifest;
-import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.app.happytails.R;
-import com.app.happytails.utils.model.PostModel;
+import com.app.happytails.utils.model.HomeModel;
 import com.cloudinary.android.MediaManager;
 import com.cloudinary.android.callback.ErrorInfo;
 import com.cloudinary.android.callback.UploadCallback;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Map;
 
 public class CreateFragment extends Fragment {
 
     private EditText vetClinicName, vetDoctorName, vetVisitDate, vetDiagnosis;
-    private ImageView vetPic;
     private Button createPostButton;
-    private Uri imageUri;
     private String postMainImageUrl;
-    private String vetImageUrl;
     private ArrayList<String> galleryImageUrls;
 
     private FirebaseAuth auth;
     private FirebaseFirestore db;
 
-    private static final int IMAGE_PICK_CODE = 1000;
-    private static final int PERMISSION_REQUEST_CODE = 2000;
-
+    // Additional fields from CreateFragment2
     private String dogName, dogAge, dogGender, description;
     private Uri mainImageUri;
     private ArrayList<Uri> galleryUris;
-    private ArrayList<String> supportersList;
-
-    private static final String TAG = "CreateFragment";
+    private ArrayList<String> supportersList; // Added field for supporters list
 
     public CreateFragment() {
         // Required empty public constructor
@@ -69,37 +54,26 @@ public class CreateFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_create2, container, false);
 
-        // Initialize UI elements
+        // Initialize views
         vetClinicName = view.findViewById(R.id.vetClinicName);
         vetDoctorName = view.findViewById(R.id.vetDoctorName);
         vetVisitDate = view.findViewById(R.id.vetVisitDate);
         vetDiagnosis = view.findViewById(R.id.vetDiagnosis);
-        vetPic = view.findViewById(R.id.vetPic);
         createPostButton = view.findViewById(R.id.postCreateBtn);
 
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        vetVisitDate.setOnClickListener(v -> showDatePickerDialog());
+        createPostButton.setOnClickListener(v -> uploadGalleryImages());
 
-        vetPic.setOnClickListener(v -> requestStoragePermission());
-
-        createPostButton.setOnClickListener(v -> uploadVetImage());
-
-        // Retrieve data passed from CreateFragment2
         if (getArguments() != null) {
             dogName = getArguments().getString("dogName");
             dogAge = getArguments().getString("dogAge");
             dogGender = getArguments().getString("dogGender");
             description = getArguments().getString("description");
-            mainImageUri = Uri.parse(getArguments().getString("mainImageUri"));
-            galleryUris = new ArrayList<>();
-            ArrayList<String> galleryUrls = getArguments().getStringArrayList("galleryUrls");
-            if (galleryUrls != null) {
-                for (String url : galleryUrls) {
-                    galleryUris.add(Uri.parse(url));
-                }
-            }
+            mainImageUri = getArguments().getParcelable("mainImageUri");
+            galleryUris = getArguments().getParcelableArrayList("galleryUris");
+
             Toast.makeText(getContext(), "Data received: " + dogName, Toast.LENGTH_SHORT).show();
         }
 
@@ -107,93 +81,6 @@ public class CreateFragment extends Fragment {
         galleryImageUrls = new ArrayList<>();
 
         return view;
-    }
-
-    private void showDatePickerDialog() {
-        final Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-        DatePickerDialog datePickerDialog = new DatePickerDialog(
-                getContext(),
-                (view, year1, month1, dayOfMonth) -> vetVisitDate.setText(dayOfMonth + "/" + (month1 + 1) + "/" + year1),
-                year, month, day);
-        datePickerDialog.show();
-    }
-
-    private void requestStoragePermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_MEDIA_IMAGES}, PERMISSION_REQUEST_CODE);
-            } else {
-                selectImage();
-            }
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
-            } else {
-                selectImage();
-            }
-        } else {
-            selectImage();
-        }
-    }
-
-    private void selectImage() {
-        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        intent.setType("image/*");
-        startActivityForResult(intent, IMAGE_PICK_CODE);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == getActivity().RESULT_OK && data != null && data.getData() != null) {
-            if (requestCode == IMAGE_PICK_CODE) {
-                imageUri = data.getData();
-                vetPic.setImageURI(imageUri);
-            }
-        }
-    }
-
-    private void uploadVetImage() {
-        if (imageUri != null) {
-            MediaManager.get().upload(imageUri)
-                    .unsigned("vet_uploads")
-                    .callback(new UploadCallback() {
-                        @Override
-                        public void onStart(String requestId) {
-                            Log.d(TAG, "Vet image upload started");
-                        }
-
-                        @Override
-                        public void onProgress(String requestId, long bytes, long totalBytes) {
-                            // Can add progress indication here if needed
-                        }
-
-                        @Override
-                        public void onSuccess(String requestId, Map resultData) {
-                            vetImageUrl = resultData.get("url").toString();
-                            Log.d(TAG, "Vet image upload successful: " + vetImageUrl);
-                            uploadGalleryImages();
-                        }
-
-                        @Override
-                        public void onError(String requestId, ErrorInfo error) {
-                            Toast.makeText(getContext(), "Error uploading vet image", Toast.LENGTH_SHORT).show();
-                            Log.e(TAG, "Error uploading vet image: " + error.getDescription());
-                        }
-
-                        @Override
-                        public void onReschedule(String requestId, ErrorInfo error) {
-                            // Handle reschedule if needed
-                        }
-                    }).dispatch();
-        } else {
-            uploadGalleryImages();
-        }
     }
 
     private void uploadGalleryImages() {
@@ -204,20 +91,17 @@ public class CreateFragment extends Fragment {
                         .callback(new UploadCallback() {
                             @Override
                             public void onStart(String requestId) {
-                                Log.d(TAG, "Gallery image upload started");
                             }
 
                             @Override
                             public void onProgress(String requestId, long bytes, long totalBytes) {
-                                // Can add progress indication here if needed
                             }
 
                             @Override
                             public void onSuccess(String requestId, Map resultData) {
-                                String galleryUrl = resultData.get("url").toString();
-                                galleryImageUrls.add(galleryUrl);
-                                Log.d(TAG, "Gallery image upload successful: " + galleryUrl);
+                                galleryImageUrls.add(resultData.get("url").toString());
                                 if (galleryImageUrls.size() == galleryUris.size()) {
+                                    // After all gallery images are uploaded, upload the main image
                                     uploadMainImage();
                                 }
                             }
@@ -225,16 +109,15 @@ public class CreateFragment extends Fragment {
                             @Override
                             public void onError(String requestId, ErrorInfo error) {
                                 Toast.makeText(getContext(), "Error uploading gallery image", Toast.LENGTH_SHORT).show();
-                                Log.e(TAG, "Error uploading gallery image: " + error.getDescription());
                             }
 
                             @Override
                             public void onReschedule(String requestId, ErrorInfo error) {
-                                // Handle reschedule if needed
                             }
                         }).dispatch();
             }
         } else {
+            // If no gallery images, directly upload the main image
             uploadMainImage();
         }
     }
@@ -246,30 +129,25 @@ public class CreateFragment extends Fragment {
                     .callback(new UploadCallback() {
                         @Override
                         public void onStart(String requestId) {
-                            Log.d(TAG, "Main image upload started");
                         }
 
                         @Override
                         public void onProgress(String requestId, long bytes, long totalBytes) {
-                            // Can add progress indication here if needed
                         }
 
                         @Override
                         public void onSuccess(String requestId, Map resultData) {
                             postMainImageUrl = resultData.get("url").toString();
-                            Log.d(TAG, "Main image upload successful: " + postMainImageUrl);
                             savePostToFirestore();
                         }
 
                         @Override
                         public void onError(String requestId, ErrorInfo error) {
                             Toast.makeText(getContext(), "Error uploading main image", Toast.LENGTH_SHORT).show();
-                            Log.e(TAG, "Error uploading main image: " + error.getDescription());
                         }
 
                         @Override
                         public void onReschedule(String requestId, ErrorInfo error) {
-                            // Handle reschedule if needed
                         }
                     }).dispatch();
         } else {
@@ -288,30 +166,37 @@ public class CreateFragment extends Fragment {
             return;
         }
 
-        PostModel post = new PostModel(
+        DocumentReference newDocRef = FirebaseFirestore.getInstance().collection("dogs").document();
+        String dogId = newDocRef.getId();
+
+        // Create a new HomeModel object
+        HomeModel post = new HomeModel(
                 FirebaseAuth.getInstance().getCurrentUser().getUid(),
-                dogName,
+                dogId,
                 Integer.parseInt(dogAge),
                 dogGender,
-                visitDate,
-                description,
-                clinicName,
-                diagnosis,
-                doctorName,
-                postMainImageUrl,
-                galleryImageUrls,
+                dogName,
                 0,
+                galleryImageUrls,
+                postMainImageUrl,
                 supportersList,
-                vetImageUrl
+                description,
+                diagnosis,
+                clinicName,
+                doctorName,
+                visitDate
         );
-        FirebaseFirestore.getInstance().collection("users_posts")
-                .add(post)
-                .addOnSuccessListener(documentReference -> {
+        Log.d("CreateFragment", "Saving post to Firestore - Dog ID: " + dogId);
+
+        newDocRef.set(post)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("CreateFragment", "Post created successfully");
                     Toast.makeText(getContext(), "Post created successfully!", Toast.LENGTH_SHORT).show();
                     clearFields();
                     navigateToHomeFragment();
                 })
                 .addOnFailureListener(e -> {
+                    Log.e("CreateFragment", "Error creating post: " + e.getMessage());
                     Toast.makeText(getContext(), "Error creating post: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
     }
@@ -329,6 +214,5 @@ public class CreateFragment extends Fragment {
         vetDoctorName.setText("");
         vetVisitDate.setText("");
         vetDiagnosis.setText("");
-        vetPic.setImageResource(R.drawable.baseline_add_24);
     }
 }

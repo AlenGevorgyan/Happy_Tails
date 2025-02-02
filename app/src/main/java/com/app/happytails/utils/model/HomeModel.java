@@ -1,120 +1,96 @@
 package com.app.happytails.utils.model;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.ArrayList;
 
 public class HomeModel {
-
-    private String userId;
-    private String username;
-    private String profileImage;
-    private String dogName;
+    private String creator;
     private int dogAge;
     private String dogGender;
-    private String vetLastVisitDate;
-    private String description;
-    private String vetClinicName;
-    private String diagnosis;
-    private String vetDoctorName;
-    private String postMainImageUrl;
-    private List<String> galleryImageUrls;
+    private String dogId;
+    private String dogName;
     private int fundingPercentage;
-    private List<String> supportersList;
-    private String vetImage;
+    private ArrayList<String> galleryImages;
+    private String mainImage;
+    private ArrayList<String> supporters;
+    private String description;
+    private String diagnosis;
+    private String clinicName;
+    private String doctorName;
+    private String vetLastVisitDate;
 
+    // Empty constructor for Firestore
     public HomeModel() {
-        this.userId = "";
-        this.dogName = "";
-        this.dogAge = 0;
-        this.dogGender = "";
-        this.vetLastVisitDate = "";
-        this.description = "";
-        this.vetClinicName = "";
-        this.diagnosis = "";
-        this.vetDoctorName = "";
-        this.postMainImageUrl = "";
-        this.galleryImageUrls = Collections.emptyList();
-        this.fundingPercentage = 0;
-        this.supportersList = Collections.emptyList();
-        this.vetImage = "";
     }
 
-    public HomeModel(String userId, String dogName, int dogAge, String dogGender, String vetLastVisitDate,
-                     String description, String vetClinicName, String diagnosis, String vetDoctorName,
-                     String postMainImageUrl, List<String> galleryImageUrls, int fundingPercentage,
-                     List<String> supportersList, String vetImage, String username, String profileImage) {
-        this.userId = userId != null ? userId : "";
-        this.dogName = dogName != null ? dogName : "";
+    public HomeModel(String creator, String dogId, int dogAge, String dogGender, String dogName, int fundingProgress, String mainImageUrl, ArrayList<String> supporters) {
+        this.creator = creator;
         this.dogAge = dogAge;
-        this.dogGender = dogGender != null ? dogGender : "";
-        this.vetLastVisitDate = vetLastVisitDate != null ? vetLastVisitDate : "";
-        this.description = description != null ? description : "";
-        this.vetClinicName = vetClinicName != null ? vetClinicName : "";
-        this.diagnosis = diagnosis != null ? diagnosis : "";
-        this.vetDoctorName = vetDoctorName != null ? vetDoctorName : "";
-        this.postMainImageUrl = postMainImageUrl != null ? postMainImageUrl : "";
-        this.galleryImageUrls = galleryImageUrls != null ? galleryImageUrls : Collections.emptyList();
+        this.dogGender = dogGender;
+        this.dogName = dogName;
         this.fundingPercentage = fundingPercentage;
-        this.supportersList = supportersList != null ? supportersList : Collections.emptyList();
-        this.vetImage = vetImage != null ? vetImage : "";
-        this.username = username != null ? username : "";
-        this.profileImage = profileImage != null ? profileImage : "";
+        this.galleryImages = galleryImages;
+        this.mainImage = mainImageUrl;
+        this.supporters = supporters;
+        this.dogId = dogId;
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId != null ? userId : "";
-    }
-
-    public String getDogName() {
-        return dogName;
-    }
-
-    public void setDogName(String dogName) {
-        this.dogName = dogName != null ? dogName : "";
-    }
-
-    public int getDogAge() {
-        return dogAge;
-    }
-
-    public void setDogAge(int dogAge) {
+    public HomeModel(String creator, String dogId, int dogAge, String dogGender, String dogName,
+                     int fundingPercentage, ArrayList<String> galleryImages, String mainImage,
+                     ArrayList<String> supporters, String description, String diagnosis,
+                     String clinicName, String doctorName, String vetLastVisitDate) {
+        this.creator = creator;
         this.dogAge = dogAge;
+        this.dogGender = dogGender;
+        this.dogName = dogName;
+        this.fundingPercentage = fundingPercentage;
+        this.dogId = dogId;
+        this.galleryImages = galleryImages;
+        this.mainImage = mainImage;
+        this.supporters = supporters;
+        this.description = description;
+        this.diagnosis = diagnosis;
+        this.clinicName = clinicName;
+        this.doctorName = doctorName;
+        this.vetLastVisitDate = vetLastVisitDate;
     }
 
-    public String getDogGender() {
-        return dogGender;
-    }
+    // Getters and setters
+    public String getCreator() { return creator; }
+    public void setCreator(String creator) { this.creator = creator; }
 
-    public void setDogGender(String dogGender) {
-        this.dogGender = dogGender != null ? dogGender : "";
-    }
+    public int getDogAge() { return dogAge; }
+    public void setDogAge(int dogAge) { this.dogAge = dogAge; }
 
-    public String getVetLastVisitDate() {
-        return vetLastVisitDate;
-    }
+    public String getDogGender() { return dogGender; }
+    public void setDogGender(String dogGender) { this.dogGender = dogGender; }
 
-    public void setVetLastVisitDate(String vetLastVisitDate) {
-        this.vetLastVisitDate = vetLastVisitDate != null ? vetLastVisitDate : "";
-    }
+    public String getDogId() { return dogId; }
+    public void setDogId(String dogId) { this.dogId = dogId; }
+
+    public String getDogName() { return dogName; }
+    public void setDogName(String dogName) { this.dogName = dogName; }
+
+    public int getFundingPercentage() { return fundingPercentage; }
+    public void setFundingPercentage(int fundingPercentage) { this.fundingPercentage = fundingPercentage; }
+
+    public ArrayList<String> getGalleryImages() { return galleryImages; }
+    public void setGalleryImages(ArrayList<String> galleryImages) { this.galleryImages = galleryImages; }
+
+    public String getMainImage() { return mainImage; }
+    public void setMainImage(String mainImage) { this.mainImage = mainImage; }
+
+    public ArrayList<String> getSupporters() { return supporters; }
+    public void setSupporters(ArrayList<String> supporters) { this.supporters = supporters; }
+
+    public String getVetLastVisitDate() { return vetLastVisitDate; }
+    public void setVetLastVisitDate(String vetLastVisitDate) { this.vetLastVisitDate = vetLastVisitDate; }
 
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
-        this.description = description != null ? description : "";
-    }
-
-    public String getVetClinicName() {
-        return vetClinicName;
-    }
-
-    public void setVetClinicName(String vetClinicName) {
-        this.vetClinicName = vetClinicName != null ? vetClinicName : "";
+        this.description = description;
     }
 
     public String getDiagnosis() {
@@ -122,90 +98,22 @@ public class HomeModel {
     }
 
     public void setDiagnosis(String diagnosis) {
-        this.diagnosis = diagnosis != null ? diagnosis : "";
+        this.diagnosis = diagnosis;
     }
 
-    public String getVetDoctorName() {
-        return vetDoctorName;
+    public String getClinicName() {
+        return clinicName;
     }
 
-    public void setVetDoctorName(String vetDoctorName) {
-        this.vetDoctorName = vetDoctorName != null ? vetDoctorName : "";
+    public void setClinicName(String clinicName) {
+        this.clinicName = clinicName;
     }
 
-    public String getPostMainImageUrl() {
-        return postMainImageUrl;
+    public String getDoctorName() {
+        return doctorName;
     }
 
-    public void setPostMainImageUrl(String postMainImageUrl) {
-        this.postMainImageUrl = postMainImageUrl != null ? postMainImageUrl : "";
-    }
-
-    public List<String> getGalleryImageUrls() {
-        return galleryImageUrls;
-    }
-
-    public void setGalleryImageUrls(List<String> galleryImageUrls) {
-        this.galleryImageUrls = galleryImageUrls != null ? galleryImageUrls : Collections.emptyList();
-    }
-
-    public int getFundingPercentage() {
-        return fundingPercentage;
-    }
-
-    public void setFundingPercentage(int fundingPercentage) {
-        this.fundingPercentage = fundingPercentage;
-    }
-
-    public List<String> getSupportersList() {
-        return supportersList;
-    }
-
-    public void setSupportersList(List<String> supportersList) {
-        this.supportersList = supportersList != null ? supportersList : Collections.emptyList();
-    }
-
-    public String getVetImage() {
-        return vetImage;
-    }
-
-    public void setVetImage(String vetImage) {
-        this.vetImage = vetImage != null ? vetImage : "";
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getProfileImage() {
-        return profileImage;
-    }
-
-    public void setProfileImage(String profileImage) {
-        this.profileImage = profileImage;
-    }
-
-    @Override
-    public String toString() {
-        return "PostModel{" +
-                "userId='" + userId + '\'' +
-                ", dogName='" + dogName + '\'' +
-                ", dogAge=" + dogAge +
-                ", dogGender='" + dogGender + '\'' +
-                ", vetLastVisitDate='" + vetLastVisitDate + '\'' +
-                ", description='" + description + '\'' +
-                ", vetClinicName='" + vetClinicName + '\'' +
-                ", diagnosis='" + diagnosis + '\'' +
-                ", vetDoctorName='" + vetDoctorName + '\'' +
-                ", postMainImageUrl='" + postMainImageUrl + '\'' +
-                ", galleryImageUrls=" + galleryImageUrls +
-                ", fundingPercentage=" + fundingPercentage +
-                ", supportersList=" + supportersList +
-                ", vetImage='" + vetImage + '\'' +
-                '}';
+    public void setDoctorName(String doctorName) {
+        this.doctorName = doctorName;
     }
 }

@@ -24,11 +24,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -76,7 +76,7 @@ public class ProfileFragment extends Fragment {
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
-        profileUid = getArguments() != null ? getArguments().getString("profileUid") : user.getUid();
+        profileUid = getArguments() != null ? getArguments().getString("userId") : user.getUid();
     }
 
     private void loadBasicData() {
@@ -132,32 +132,37 @@ public class ProfileFragment extends Fragment {
     }
 
     private void loadUserPosts() {
-        Query query = FirebaseFirestore.getInstance()
-                .collection("users_posts")
-                .whereEqualTo("userId", profileUid);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Query query = db.collection("dogs")
+                .whereEqualTo("creator", profileUid);
 
-        FirestoreRecyclerOptions<PostModel> options = new FirestoreRecyclerOptions.Builder<PostModel>()
-                .setQuery(query, PostModel.class)
-                .build();
+        query.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                List<PostModel> postList = new ArrayList<>();
+                for (DocumentSnapshot document : task.getResult()) {
+                    PostModel post = document.toObject(PostModel.class);
+                    postList.add(post);
+                }
 
-        postAdapter = new PostAdapter(options, getContext());
-
-        recyclerView.setAdapter(postAdapter);
+                postAdapter = new PostAdapter(getContext(), postList);
+                recyclerView.setAdapter(postAdapter);
+            } else {
+                Toast.makeText(getContext(), "Error loading posts", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Error loading posts", task.getException());
+            }
+        });
     }
 
     @Override
     public void onStart() {
         super.onStart();
         if (postAdapter != null) {
-            postAdapter.startListening();
+            postAdapter.notifyDataSetChanged();
         }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (postAdapter != null) {
-            postAdapter.stopListening();
-        }
     }
 }

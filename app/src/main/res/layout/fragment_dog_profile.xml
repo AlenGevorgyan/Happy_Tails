@@ -1,0 +1,159 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/off_white"
+    tools:context=".utils.Fragments.ProfileFragment">
+
+    <ImageButton
+        android:id="@+id/dogBackBtn"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/baseline_arrow_back_dog"
+        android:backgroundTint="@color/primary_color"/>
+
+
+    <!-- User Info Section -->
+    <LinearLayout
+        android:id="@+id/UserInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dogBackBtn"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <!-- Dog Profile Image -->
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/dogProfileImage"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_margin="14dp"
+            android:src="@drawable/user_icon"
+            app:civ_border_color="@color/dark_secondary_color"
+            app:civ_border_width="1dp" />
+
+        <!-- Dog Name and Description -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center">
+
+                <TextView
+                    android:id="@+id/dogNameTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dog Name"
+                    android:layout_gravity="left"
+                    android:textColor="@color/primary_color"
+                    android:textSize="40sp"
+                    android:layout_marginBottom="5dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/dogAgeTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dog Age"
+                    android:layout_gravity="left"
+                    android:textColor="@color/primary_color"
+                    android:layout_marginBottom="5dp"
+                    android:textSize="25sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/dogGenderTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dog Gender"
+                    android:layout_gravity="left"
+                    android:textColor="@color/primary_color"
+                    android:layout_marginBottom="5dp"
+                    android:textSize="25sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/descriptionTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:layout_gravity="left"
+                    android:text="Description"
+                    android:textSize="17sp"
+                    android:textColor="@color/primary_color"
+                    android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Monthly Funding Section -->
+    <TextView
+        android:id="@+id/monthlyTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/UserInfo"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Monthly Funding"
+        android:textStyle="bold" />
+
+    <ProgressBar
+        android:id="@+id/funding_bar_profile"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_below="@id/monthlyTv"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:max="100"
+        android:progress="75"
+        android:progressDrawable="@drawable/progress_bar_custom" />
+
+    <!-- Follow or Settings Button -->
+    <Button
+        android:id="@+id/followBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_below="@id/funding_bar_profile"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="Donate" />
+
+    <ImageButton
+        android:id="@+id/settingsBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_below="@id/funding_bar_profile"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/settings_icon"
+        android:visibility="gone" />
+
+    <!-- Divider -->
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/dogProfileDevider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/followBtn"
+        android:layout_marginTop="25dp"
+        app:dividerColor="@color/gray" />
+
+    <!-- Bottom Navigation -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/dogBottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/dogProfileDevider"
+        app:backgroundTint="@color/primary_color"
+        app:itemIconTint="@color/secondary_color"
+        app:itemActiveIndicatorStyle="?attr/selectableItemBackgroundBorderless"
+        app:menu="@menu/dog_profile_navigation_menu" />
+
+    <FrameLayout
+        android:id="@+id/dog_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/dogBottomNavigation" />
+</RelativeLayout>

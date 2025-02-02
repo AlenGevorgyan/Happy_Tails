@@ -2,39 +2,35 @@ package com.app.happytails.utils.Adapters;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.happytails.R;
-import com.app.happytails.utils.Fragments.GalleryFragment;
+import com.app.happytails.utils.Fragments.DogProfile;
 import com.app.happytails.utils.model.PostModel;
 import com.bumptech.glide.Glide;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
-import java.util.ArrayList;
+import java.lang.ref.WeakReference;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class PostAdapter extends FirestoreRecyclerAdapter<PostModel, PostAdapter.PostViewHolder> {
+public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
 
-    private Context context;
-    private static final String TAG = "PostAdapter";
+    private List<PostModel> postList;
+    private WeakReference<Context> contextRef;
 
-    public PostAdapter(@NonNull FirestoreRecyclerOptions<PostModel> options, Context context) {
-        super(options);
-        this.context = context;
+    public PostAdapter(Context context, List<PostModel> postList) {
+        this.contextRef = new WeakReference<>(context);
+        this.postList = postList;
     }
 
     @NonNull
@@ -45,59 +41,55 @@ public class PostAdapter extends FirestoreRecyclerAdapter<PostModel, PostAdapter
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull PostViewHolder holder, int position, @NonNull PostModel post) {
-        Log.d(TAG, "Loading image from URL: " + post.getPostMainImageUrl());
+    public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
+        PostModel post = postList.get(position);
+        Context context = contextRef.get();
 
-        if (post.getPostMainImageUrl() != null && !post.getPostMainImageUrl().isEmpty()) {
+        if (context == null) return;
+
+        if (post.getMainImage() != null && !post.getMainImage().isEmpty()) {
             Glide.with(context)
-                    .load(post.getPostMainImageUrl())
+                    .load(post.getMainImage())
                     .placeholder(R.drawable.user_icon)
-                    .timeout(6500)
                     .into(holder.dogPic);
         } else {
             holder.dogPic.setImageResource(R.drawable.user_icon);
         }
 
-        holder.dogName.setText(post.getDogName() != null ? post.getDogName() : "Unknown Dog");
-        holder.dogAge.setText("Estimated Age: " + (post.getDogAge() != 0 ? String.valueOf(post.getDogAge()) : "N/A"));
-        holder.dogGender.setText("Gender: " + (post.getDogGender() != null ? post.getDogGender() : "Unknown Gender"));
+        holder.dogName.setText(post.getDogName() != null ? post.getDogName() : "No Data");
+        holder.dogAge.setText(post.getDogAge() != 0 ? "Age: " + post.getDogAge() : "No Data");
+        holder.dogGender.setText(post.getDogGender() != null ? "Gender: " + post.getDogGender() : "No Data");
         holder.supportersList.setText(post.getSupportersList() != null ? post.getSupportersList().toString() : "No supporters");
         holder.fundingBar.setProgress(post.getFundingPercentage());
 
-        holder.veterinaryBtn.setOnClickListener(v -> {
-            holder.vetLastVisitDate.setText(post.getVetLastVisitDate() != null ? post.getVetLastVisitDate() : "No data");
-            holder.vetLastVisitDate.setVisibility(View.VISIBLE);
-            Toast.makeText(context, "Vet last visit date: " + post.getVetLastVisitDate(), Toast.LENGTH_SHORT).show();
-        });
+        // Handle "View Profile" button click
+        holder.viewProfile.setOnClickListener(v -> {
+            DogProfile fragment = new DogProfile();
+            Bundle args = new Bundle();
+            args.putString("dogId", post.getDogId());
+            fragment.setArguments(args);
 
-        holder.galleryBtn.setOnClickListener(v -> {
-            ArrayList<String> galleryImageUrls = new ArrayList<>(post.getGalleryImageUrls());
-            if (!galleryImageUrls.isEmpty()) {
-                GalleryFragment galleryFragment = new GalleryFragment();
-                Bundle args = new Bundle();
-                args.putStringArrayList("galleryImageUrls", galleryImageUrls);
-                galleryFragment.setArguments(args);
-
-                if (context instanceof AppCompatActivity) {
-                    AppCompatActivity activity = (AppCompatActivity) context;
-                    activity.getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.fragment_container, galleryFragment)
-                            .addToBackStack(null)
-                            .commit();
-                }
-            } else {
-                Toast.makeText(context, "No gallery images available", Toast.LENGTH_SHORT).show();
+            if (context instanceof AppCompatActivity) {
+                AppCompatActivity activity = (AppCompatActivity) context;
+                activity.getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .addToBackStack(null)
+                        .commit();
             }
         });
     }
 
-    static class PostViewHolder extends RecyclerView.ViewHolder {
+    @Override
+    public int getItemCount() {
+        return postList.size();
+    }
 
-        private CircleImageView dogPic;
-        private TextView dogName, dogAge, dogGender, vetLastVisitDate, supportersList;
-        private ProgressBar fundingBar;
-        private Button galleryBtn, veterinaryBtn, donationBtn;
+    static class PostViewHolder extends RecyclerView.ViewHolder {
+        CircleImageView dogPic;
+        TextView dogName, dogAge, dogGender, supportersList;
+        ProgressBar fundingBar;
+        Button viewProfile;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -106,12 +98,9 @@ public class PostAdapter extends FirestoreRecyclerAdapter<PostModel, PostAdapter
             dogName = itemView.findViewById(R.id.dog_name);
             dogAge = itemView.findViewById(R.id.dog_age);
             dogGender = itemView.findViewById(R.id.dog_sex);
-            vetLastVisitDate = itemView.findViewById(R.id.vet_last_visit_date);
             supportersList = itemView.findViewById(R.id.supporters_list);
             fundingBar = itemView.findViewById(R.id.funding_bar);
-            galleryBtn = itemView.findViewById(R.id.gallery_button);
-            veterinaryBtn = itemView.findViewById(R.id.veterinary_button);
-            donationBtn = itemView.findViewById(R.id.donation_button);
+            viewProfile = itemView.findViewById(R.id.gallery_button);
         }
     }
 }

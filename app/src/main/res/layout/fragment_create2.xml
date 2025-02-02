@@ -78,27 +78,18 @@
                 android:layout_below="@id/vetVisitDate"
                 android:layout_marginTop="10dp" />
 
-            <!-- Image for Veterinary Record -->
-            <ImageView
-                android:id="@+id/vetPic"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/baseline_add_24"
-                android:layout_below="@id/vetDiagnosis"
-                android:layout_marginTop="10dp" />
-
             <!-- Button to create post -->
             <Button
                 android:id="@+id/postCreateBtn"
-                android:layout_width="match_parent"
+                android:layout_width="350dp"
                 android:layout_height="wrap_content"
                 android:text="Create Post"
                 android:textSize="18sp"
                 android:textColor="@android:color/white"
                 android:backgroundTint="@color/primary_color"
-                android:layout_below="@id/vetPic"
-                android:layout_marginTop="20dp" />
+                android:layout_below="@id/vetDiagnosis"
+                android:padding="10dp"
+                android:layout_marginTop="30dp" />
 
         </RelativeLayout>
     </com.google.android.material.card.MaterialCardView>

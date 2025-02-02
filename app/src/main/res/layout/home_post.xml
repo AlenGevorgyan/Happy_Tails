@@ -78,14 +78,6 @@
             android:text="Estimated Age: 3 years"
             android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/vet_last_visit_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text=""
-            android:visibility="gone" />
-
         <!-- Supporters List -->
         <TextView
             android:id="@+id/supporters_list_home"
@@ -111,29 +103,12 @@
             android:max="100"
             android:progressDrawable="@drawable/progress_bar_custom" />
 
-        <!-- Button to View Gallery -->
         <Button
-            android:id="@+id/gallery_button_home"
+            android:id="@+id/view_profile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="View Gallery" />
-
-        <!-- Button to View Veterinary Page -->
-        <Button
-            android:id="@+id/veterinary_button_home"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="View Veterinary Page" />
-
-        <!-- Button to Donate -->
-        <Button
-            android:id="@+id/donation_button_home"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Donate Now" />
+            android:layout_marginTop="10dp"
+            android:text="View Profile" />
 
     </LinearLayout>
 

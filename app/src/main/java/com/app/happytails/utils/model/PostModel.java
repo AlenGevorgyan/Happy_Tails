@@ -1,194 +1,73 @@
 package com.app.happytails.utils.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class PostModel {
-
-    private String userId;
-    private String dogName;
     private int dogAge;
     private String dogGender;
-    private String vetLastVisitDate;
-    private String description;
-    private String vetClinicName;
-    private String diagnosis;
-    private String vetDoctorName;
-    private String postMainImageUrl;
-    private List<String> galleryImageUrls;
+    private String dogId;
+    private String dogName;
     private int fundingPercentage;
-    private List<String> supportersList;
-    private String vetImage;
+    private String mainImage;
+    private ArrayList<String> supporters;
+    private String description;
 
+    // Empty constructor for Firestore
     public PostModel() {
-        this.userId = "";
-        this.dogName = "";
-        this.dogAge = 0;
-        this.dogGender = "";
-        this.vetLastVisitDate = "";
-        this.description = "";
-        this.vetClinicName = "";
-        this.diagnosis = "";
-        this.vetDoctorName = "";
-        this.postMainImageUrl = "";
-        this.galleryImageUrls = Collections.emptyList();
-        this.fundingPercentage = 0;
-        this.supportersList = Collections.emptyList();
-        this.vetImage = "";
     }
 
-    // Constructor with all fields
-    public PostModel(String userId, String dogName, int dogAge, String dogGender, String vetLastVisitDate,
-                     String description, String vetClinicName, String diagnosis, String vetDoctorName,
-                     String postMainImageUrl, List<String> galleryImageUrls, int fundingPercentage,
-                     List<String> supportersList, String vetImage) {
-        this.userId = userId != null ? userId : "";
-        this.dogName = dogName != null ? dogName : "";
+    public PostModel(String dogId, int dogAge, String dogGender, String dogName, int fundingProgress, String mainImageUrl, ArrayList<String> supporters) {
         this.dogAge = dogAge;
-        this.dogGender = dogGender != null ? dogGender : "";
-        this.vetLastVisitDate = vetLastVisitDate != null ? vetLastVisitDate : "";
-        this.description = description != null ? description : "";
-        this.vetClinicName = vetClinicName != null ? vetClinicName : "";
-        this.diagnosis = diagnosis != null ? diagnosis : "";
-        this.vetDoctorName = vetDoctorName != null ? vetDoctorName : "";
-        this.postMainImageUrl = postMainImageUrl != null ? postMainImageUrl : "";
-        this.galleryImageUrls = galleryImageUrls != null ? galleryImageUrls : Collections.emptyList();
+        this.dogGender = dogGender;
+        this.dogName = dogName;
         this.fundingPercentage = fundingPercentage;
-        this.supportersList = supportersList != null ? supportersList : Collections.emptyList();
-        this.vetImage = vetImage != null ? vetImage : "";
+        this.mainImage = mainImageUrl;
+        this.supporters = supporters;
+        this.dogId = dogId;
     }
 
-    // Getters and setters for all fields
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId != null ? userId : "";
-    }
-
-    public String getDogName() {
-        return dogName;
-    }
-
-    public void setDogName(String dogName) {
-        this.dogName = dogName != null ? dogName : "";
-    }
-
-    public int getDogAge() {
-        return dogAge;
-    }
-
-    public void setDogAge(int dogAge) {
+    public PostModel(String dogId, int dogAge, String dogGender, String dogName,
+                     int fundingPercentage, String mainImage,
+                     ArrayList<String> supporters, String description) {
         this.dogAge = dogAge;
+        this.dogGender = dogGender;
+        this.dogName = dogName;
+        this.fundingPercentage = fundingPercentage;
+        this.dogId = dogId;
+        this.mainImage = mainImage;
+        this.supporters = supporters;
+        this.description = description;
     }
 
-    public String getDogGender() {
-        return dogGender;
-    }
 
-    public void setDogGender(String dogGender) {
-        this.dogGender = dogGender != null ? dogGender : "";
-    }
+    public int getDogAge() { return dogAge; }
+    public void setDogAge(int dogAge) { this.dogAge = dogAge; }
 
-    public String getVetLastVisitDate() {
-        return vetLastVisitDate;
-    }
+    public String getDogGender() { return dogGender; }
+    public void setDogGender(String dogGender) { this.dogGender = dogGender; }
 
-    public void setVetLastVisitDate(String vetLastVisitDate) {
-        this.vetLastVisitDate = vetLastVisitDate != null ? vetLastVisitDate : "";
-    }
+    public String getDogId() { return dogId; }
+    public void setDogId(String dogId) { this.dogId = dogId; }
+
+    public String getDogName() { return dogName; }
+    public void setDogName(String dogName) { this.dogName = dogName; }
+
+    public int getFundingPercentage() { return fundingPercentage; }
+    public void setFundingPercentage(int fundingPercentage) { this.fundingPercentage = fundingPercentage; }
+
+
+    public String getMainImage() { return mainImage; }
+    public void setMainImage(String mainImage) { this.mainImage = mainImage; }
+
+    public ArrayList<String> getSupportersList() { return supporters; }
+    public void setSupportersList(ArrayList<String> supporters) { this.supporters = supporters; }
 
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
-        this.description = description != null ? description : "";
+        this.description = description;
     }
 
-    public String getVetClinicName() {
-        return vetClinicName;
-    }
-
-    public void setVetClinicName(String vetClinicName) {
-        this.vetClinicName = vetClinicName != null ? vetClinicName : "";
-    }
-
-    public String getDiagnosis() {
-        return diagnosis;
-    }
-
-    public void setDiagnosis(String diagnosis) {
-        this.diagnosis = diagnosis != null ? diagnosis : "";
-    }
-
-    public String getVetDoctorName() {
-        return vetDoctorName;
-    }
-
-    public void setVetDoctorName(String vetDoctorName) {
-        this.vetDoctorName = vetDoctorName != null ? vetDoctorName : "";
-    }
-
-    public String getPostMainImageUrl() {
-        return postMainImageUrl;
-    }
-
-    public void setPostMainImageUrl(String postMainImageUrl) {
-        this.postMainImageUrl = postMainImageUrl != null ? postMainImageUrl : "";
-    }
-
-    public List<String> getGalleryImageUrls() {
-        return galleryImageUrls;
-    }
-
-    public void setGalleryImageUrls(List<String> galleryImageUrls) {
-        this.galleryImageUrls = galleryImageUrls != null ? galleryImageUrls : Collections.emptyList();
-    }
-
-    public int getFundingPercentage() {
-        return fundingPercentage;
-    }
-
-    public void setFundingPercentage(int fundingPercentage) {
-        this.fundingPercentage = fundingPercentage;
-    }
-
-    public List<String> getSupportersList() {
-        return supportersList;
-    }
-
-    public void setSupportersList(List<String> supportersList) {
-        this.supportersList = supportersList != null ? supportersList : Collections.emptyList();
-    }
-
-    public String getVetImage() {
-        return vetImage;
-    }
-
-    public void setVetImage(String vetImage) {
-        this.vetImage = vetImage != null ? vetImage : "";
-    }
-
-    @Override
-    public String toString() {
-        return "PostModel{" +
-                "userId='" + userId + '\'' +
-                ", dogName='" + dogName + '\'' +
-                ", dogAge=" + dogAge +
-                ", dogGender='" + dogGender + '\'' +
-                ", vetLastVisitDate='" + vetLastVisitDate + '\'' +
-                ", description='" + description + '\'' +
-                ", vetClinicName='" + vetClinicName + '\'' +
-                ", diagnosis='" + diagnosis + '\'' +
-                ", vetDoctorName='" + vetDoctorName + '\'' +
-                ", postMainImageUrl='" + postMainImageUrl + '\'' +
-                ", galleryImageUrls=" + galleryImageUrls +
-                ", fundingPercentage=" + fundingPercentage +
-                ", supportersList=" + supportersList +
-                ", vetImage='" + vetImage + '\'' +
-                '}';
-    }
 }

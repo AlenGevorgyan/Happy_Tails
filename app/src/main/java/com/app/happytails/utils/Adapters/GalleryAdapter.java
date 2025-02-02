@@ -1,6 +1,7 @@
 package com.app.happytails.utils.Adapters;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,13 +18,13 @@ import java.util.List;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryViewHolder> {
 
-    private List<String> imageUrls;
+    private List<Uri> imageUris;
     private Context context;
     private static final String TAG = "GalleryAdapter";
 
-    public GalleryAdapter(Context context, List<String> imageUrls) {
+    public GalleryAdapter(Context context, List<Uri> imageUris) {
         this.context = context;
-        this.imageUrls = imageUrls;
+        this.imageUris = imageUris;
     }
 
     @NonNull
@@ -35,12 +36,12 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
 
     @Override
     public void onBindViewHolder(@NonNull GalleryViewHolder holder, int position) {
-        String imageUrl = imageUrls.get(position);
-        Log.d(TAG, "Loading image from URL: " + imageUrl);
+        Uri imageUri = imageUris.get(position);
+        Log.d(TAG, "Loading image from URI: " + imageUri);
 
-        if (imageUrl != null && !imageUrl.isEmpty()) {
+        if (imageUri != null) {
             Glide.with(context)
-                    .load(imageUrl)
+                    .load(imageUri)
                     .placeholder(R.drawable.user_icon)
                     .error(R.drawable.user_icon)
                     .timeout(6500)
@@ -52,7 +53,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
 
     @Override
     public int getItemCount() {
-        return imageUrls.size();
+        return imageUris.size();
     }
 
     static class GalleryViewHolder extends RecyclerView.ViewHolder {

@@ -1,11 +1,11 @@
 package com.app.happytails.utils.Fragments;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,9 +24,8 @@ public class GalleryFragment extends Fragment {
 
     private static final String TAG = "GalleryFragment";
     private RecyclerView galleryRecyclerView;
-    private ImageButton backBtn;
     private GalleryAdapter galleryAdapter;
-    private List<String> imageUrls;
+    private List<Uri> imageUris;
 
     @Nullable
     @Override
@@ -42,14 +41,16 @@ public class GalleryFragment extends Fragment {
         galleryRecyclerView.setHasFixedSize(true);
         galleryRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
 
-        backBtn = view.findViewById(R.id.backToProfileFromGallery);
-        backBtn.setOnClickListener(v -> getParentFragmentManager().popBackStack());
-
         if (getArguments() != null && getArguments().containsKey("galleryImageUrls")) {
-            imageUrls = getArguments().getStringArrayList("galleryImageUrls");
+            ArrayList<String> imageUrls = getArguments().getStringArrayList("galleryImageUrls");
             Log.d(TAG, "Image URLs: " + imageUrls);
             if (imageUrls != null && !imageUrls.isEmpty()) {
-                galleryAdapter = new GalleryAdapter(getContext(), imageUrls);
+                imageUris = new ArrayList<>();
+                for (String url : imageUrls) {
+                    Uri uri = Uri.parse(url);
+                    imageUris.add(uri);
+                }
+                galleryAdapter = new GalleryAdapter(getContext(), imageUris);
                 galleryRecyclerView.setAdapter(galleryAdapter);
             } else {
                 Log.d(TAG, "No images to display");

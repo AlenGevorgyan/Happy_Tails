@@ -31,7 +31,7 @@ public class CreateFragment2 extends Fragment {
     private Button nextButton;
     private RecyclerView recyclerView;
     private Uri mainImageUri;
-    private final ArrayList<String> galleryUrls = new ArrayList<>();
+    private final ArrayList<Uri> galleryUris = new ArrayList<>();
     private GalleryAdapter galleryAdapter;
 
     public CreateFragment2() {
@@ -57,12 +57,15 @@ public class CreateFragment2 extends Fragment {
         recyclerView = view.findViewById(R.id.dogGallery);
         nextButton = view.findViewById(R.id.postNextBtn);
 
+        // Setup RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        galleryAdapter = new GalleryAdapter(getContext(), galleryUrls);
+        galleryAdapter = new GalleryAdapter(getContext(), galleryUris);
         recyclerView.setAdapter(galleryAdapter);
 
-        // Set up button click listeners
+        // Handle button click to navigate
         nextButton.setOnClickListener(v -> handleNextButtonClick());
+
+        // Handle image selection
         dogPic.setOnClickListener(v -> openMainImageGallery());
         dogGalleryPic.setOnClickListener(v -> openGalleryForDogImages());
     }
@@ -83,8 +86,8 @@ public class CreateFragment2 extends Fragment {
         bundle.putString("dogAge", age);
         bundle.putString("dogGender", gender);
         bundle.putString("description", description);
-        bundle.putString("mainImageUri", mainImageUri != null ? mainImageUri.toString() : null);
-        bundle.putStringArrayList("galleryUrls", galleryUrls);
+        bundle.putParcelable("mainImageUri", mainImageUri);
+        bundle.putParcelableArrayList("galleryUris", galleryUris);
 
         CreateFragment createFragment = new CreateFragment();
         createFragment.setArguments(bundle);
@@ -115,20 +118,24 @@ public class CreateFragment2 extends Fragment {
 
         if (resultCode == getActivity().RESULT_OK && data != null) {
             if (requestCode == 1) {
+                // Handle single main image selection
                 mainImageUri = data.getData();
                 dogPic.setImageURI(mainImageUri);
 
             } else if (requestCode == 2) {
-                galleryUrls.clear();
+                // Handle multiple images for the gallery
+                galleryUris.clear();
                 if (data.getClipData() != null) {
                     int count = data.getClipData().getItemCount();
                     for (int i = 0; i < count; i++) {
                         Uri imageUri = data.getClipData().getItemAt(i).getUri();
-                        galleryUrls.add(imageUri.toString());
+                        galleryUris.add(imageUri);
                     }
                 } else if (data.getData() != null) {
-                    galleryUrls.add(data.getData().toString());
+                    galleryUris.add(data.getData());
                 }
+
+                // Notify the adapter that the data has changed
                 galleryAdapter.notifyDataSetChanged();
             }
         }

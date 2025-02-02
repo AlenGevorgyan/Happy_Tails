@@ -83,11 +83,14 @@
 
         <Button
             android:id="@+id/postNextBtn"
-            android:layout_width="match_parent"
+            android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:text="Next"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:padding="10dp"
             android:layout_marginTop="10dp"
-            android:background="@color/primary_color"
+            android:backgroundTint="@color/primary_color"
             android:textColor="@android:color/white" />
     </LinearLayout>
 </ScrollView>

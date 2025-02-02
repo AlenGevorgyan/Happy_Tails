@@ -69,4 +69,7 @@ dependencies {
 
     // CircleImageView for rounded image views
     implementation("de.hdodenhof:circleimageview:3.1.0")
+
+    //Payment API
+    implementation("com.stripe:stripe-java:28.2.0")
 }
