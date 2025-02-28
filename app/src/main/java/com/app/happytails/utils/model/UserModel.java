@@ -12,13 +12,14 @@ public class UserModel {
     private Timestamp createdTimestamp;
 
     private String userImage;
+    private String public_id;
 
     private String status;
 
     public UserModel() {
     }
 
-    public UserModel(Timestamp createdTimestamp, String username, String email, String userId, String userImage, int followers, int posts, String status) {
+    public UserModel(Timestamp createdTimestamp, String username, String email, String userId, String userImage, String public_id, int followers, int posts, String status) {
         this.createdTimestamp = createdTimestamp;
         this.username = username;
         this.email = email;

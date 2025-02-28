@@ -57,6 +57,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="8dp"
             android:text="Dog Name"
+            android:textColor="@color/black"
             android:textSize="24sp"
             android:textStyle="bold" />
 
@@ -67,6 +68,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Sex: Male"
+            android:textColor="@color/black"
             android:textSize="16sp" />
 
         <!-- Dog's Estimated Age -->
@@ -76,6 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Estimated Age: 3 years"
+            android:textColor="@color/black"
             android:textSize="16sp" />
 
         <!-- Supporters List -->
@@ -84,6 +87,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="John, Sarah, Alex"
+            android:textColor="@color/black"
             android:textSize="14sp" />
 
         <!-- Monthly Funding Progress Bar -->
@@ -92,6 +96,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Monthly Funding"
+            android:textColor="@color/black"
             android:textStyle="bold"/>
 
         <ProgressBar
@@ -108,6 +113,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:textColor="@color/white"
             android:text="View Profile" />
 
     </LinearLayout>

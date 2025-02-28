@@ -118,12 +118,10 @@ public class CreateFragment2 extends Fragment {
 
         if (resultCode == getActivity().RESULT_OK && data != null) {
             if (requestCode == 1) {
-                // Handle single main image selection
                 mainImageUri = data.getData();
                 dogPic.setImageURI(mainImageUri);
 
             } else if (requestCode == 2) {
-                // Handle multiple images for the gallery
                 galleryUris.clear();
                 if (data.getClipData() != null) {
                     int count = data.getClipData().getItemCount();

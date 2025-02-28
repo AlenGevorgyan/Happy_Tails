@@ -119,7 +119,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void saveUserToFirestore(FirebaseUser user, String username, String email) {
-        UserModel userModel = new UserModel(Timestamp.now(), username, email, user.getUid(), "", 0, 0, "No status");
+        UserModel userModel = new UserModel(Timestamp.now(), username, email, user.getUid(), "", null, 0, 0, "No status");
 
         firestore.collection("users")
                 .document(user.getUid())

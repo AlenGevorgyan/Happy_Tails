@@ -37,7 +37,7 @@ dependencies {
     // Firebase BOM for version management
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
 
-    // Firebase libraries
+    // Firebase libraries (no need to specify versions as the BOM takes care of it)
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-storage")
@@ -56,8 +56,9 @@ dependencies {
     // Cloudinary
     implementation("com.cloudinary:cloudinary-android:3.0.2")
 
-    // Image loading with Glide
+    // Image loading with Glide (make sure to use the latest version)
     implementation("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
 
     // Fragment KTX for Kotlin extensions
     implementation("androidx.fragment:fragment-ktx:1.8.5")
@@ -70,6 +71,6 @@ dependencies {
     // CircleImageView for rounded image views
     implementation("de.hdodenhof:circleimageview:3.1.0")
 
-    //Payment API
+    // Payment API (ensure the correct version)
     implementation("com.stripe:stripe-java:28.2.0")
 }

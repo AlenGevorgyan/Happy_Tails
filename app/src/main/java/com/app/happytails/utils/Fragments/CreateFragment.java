@@ -39,11 +39,10 @@ public class CreateFragment extends Fragment {
     private FirebaseAuth auth;
     private FirebaseFirestore db;
 
-    // Additional fields from CreateFragment2
     private String dogName, dogAge, dogGender, description;
     private Uri mainImageUri;
     private ArrayList<Uri> galleryUris;
-    private ArrayList<String> supportersList; // Added field for supporters list
+    private ArrayList<String> supportersList;
 
     public CreateFragment() {
         // Required empty public constructor
@@ -169,7 +168,6 @@ public class CreateFragment extends Fragment {
         DocumentReference newDocRef = FirebaseFirestore.getInstance().collection("dogs").document();
         String dogId = newDocRef.getId();
 
-        // Create a new HomeModel object
         HomeModel post = new HomeModel(
                 FirebaseAuth.getInstance().getCurrentUser().getUid(),
                 dogId,

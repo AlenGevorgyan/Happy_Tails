@@ -59,6 +59,15 @@
             android:hint="Description"
             android:layout_marginTop="10dp" />
 
+        <TextView
+            android:id="@+id/galleryTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Dog Gallery"
+            android:textColor="@color/black"
+            android:gravity="center" />
+
         <!-- Image Uploads -->
         <ImageView
             android:id="@+id/dogPic"
@@ -66,14 +75,6 @@
             android:layout_height="100dp"
             android:layout_marginTop="10dp"
             android:src="@drawable/baseline_add_24" />
-
-        <TextView
-            android:id="@+id/galleryTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Dog Gallery"
-            android:gravity="center" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/dogGallery"

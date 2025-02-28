@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Veterinary Clinic Name"
                 android:padding="10dp"
-                android:textColor="#000"
+                android:textColor="@color/black"
                 android:layout_below="@id/veterinarySectionHeader"
                 android:layout_marginTop="10dp" />
 

@@ -35,8 +35,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class DogProfile extends Fragment {
 
     private TextView dogNameTv;
-    private TextView dogAgeTv;
-    private TextView dogGenderTv;
     private TextView dogDescriptionTv;
     private ProgressBar fundingProgress;
     private Button followBtn;
@@ -46,7 +44,8 @@ public class DogProfile extends Fragment {
     private FrameLayout frameLayout;
 
     private String userId;
-    private String dogId, clinicName, doctorName, lastVisitDate, diagnosis;
+    private String dogId, clinicName, doctorName, lastVisitDate, diagnosis, gender;
+    private long age;
     private ListenerRegistration dogListener;
     private ArrayList<String> galleryImageUrls, supporters;
 
@@ -57,8 +56,6 @@ public class DogProfile extends Fragment {
 
         // Initialize views
         dogNameTv = view.findViewById(R.id.dogNameTV);
-        dogAgeTv = view.findViewById(R.id.dogAgeTV);
-        dogGenderTv = view.findViewById(R.id.dogGenderTV);
         dogDescriptionTv = view.findViewById(R.id.descriptionTV);
         fundingProgress = view.findViewById(R.id.funding_bar_profile);
         followBtn = view.findViewById(R.id.followBtn);
@@ -84,7 +81,6 @@ public class DogProfile extends Fragment {
 
         backBtn.setOnClickListener(v -> handleBackButton());
 
-        // Set default fragment to GalleryFragment
         navigationView.setSelectedItemId(R.id.galleryMenu);
         loadDefaultFragment();
 
@@ -105,8 +101,8 @@ public class DogProfile extends Fragment {
                 Map<String, Object> data = snapshot.getData();
                 if (data != null) {
                     String name = (String) data.get("dogName");
-                    long age = (long) data.get("dogAge");
-                    String gender = (String) data.get("dogGender");
+                    age = (long) data.get("dogAge");
+                    gender = (String) data.get("dogGender");
                     String description = (String) data.get("description");
                     String creatorId = (String) data.get("creator");
                     String profileImageUrl = (String) data.get("mainImage");
@@ -119,8 +115,6 @@ public class DogProfile extends Fragment {
                     supporters = (ArrayList<String>) data.get("supporters");
 
                     dogNameTv.setText(name);
-                    dogAgeTv.setText("Estimated Age: " + age);
-                    dogGenderTv.setText("Gender: " + gender);
                     dogDescriptionTv.setText(description);
                     fundingProgress.setProgress((int) fundingPercentage);
 
@@ -161,12 +155,22 @@ public class DogProfile extends Fragment {
                 fragment.setArguments(bundle);
             }
         } else if (itemId == R.id.vetMenu) {
-            fragment = VetPageFragment.newInstance(clinicName, doctorName, lastVisitDate, diagnosis);
+            fragment = new VetPageFragment();
+            if (gender != null && age != 0) {
+                Bundle bundle = new Bundle();
+                bundle.putString("vetName", clinicName);
+                bundle.putString("docName", doctorName);
+                bundle.putString("vetLastVisitDate", lastVisitDate);
+                bundle.putString("diagnosis", diagnosis);
+                bundle.putLong("dogAge", age);
+                bundle.putString("dogGender", gender);
+                fragment.setArguments(bundle);
+            }
         } else if (itemId == R.id.supportersMenu) {
             fragment = new SupportersFragment();
             if (supporters != null && !supporters.isEmpty()) {
                 Bundle bundle = new Bundle();
-                bundle.putStringArrayList("supporters", supporters);
+                bundle.putString("dogId", dogId);
                 fragment.setArguments(bundle);
             }
         }

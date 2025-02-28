@@ -86,17 +86,13 @@
 
     </com.google.android.material.card.MaterialCardView>
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/login_img_layout"
-            android:layout_below="@id/step"
-            android:layout_centerHorizontal="true">
-            <ImageView
-                android:layout_width="200dp"
-                android:layout_height="200dp"
-                android:src="@drawable/registration_icon" />
-        </RelativeLayout>
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/user_image"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_below="@id/step"
+        android:layout_centerInParent="true"
+        android:src="@drawable/baseline_add_24" />
 
 
     <com.google.android.material.card.MaterialCardView
@@ -106,7 +102,7 @@
         app:cardCornerRadius="15dp"
         app:strokeWidth="0dp"
         app:cardElevation="8dp"
-        android:layout_below="@id/login_img_layout"
+        android:layout_below="@id/user_image"
         android:layout_height="wrap_content">
         <LinearLayout
             android:layout_width="match_parent"

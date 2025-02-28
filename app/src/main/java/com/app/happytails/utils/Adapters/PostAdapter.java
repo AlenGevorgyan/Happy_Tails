@@ -59,7 +59,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.dogName.setText(post.getDogName() != null ? post.getDogName() : "No Data");
         holder.dogAge.setText(post.getDogAge() != 0 ? "Age: " + post.getDogAge() : "No Data");
         holder.dogGender.setText(post.getDogGender() != null ? "Gender: " + post.getDogGender() : "No Data");
-        holder.supportersList.setText(post.getSupportersList() != null ? post.getSupportersList().toString() : "No supporters");
+        holder.supportersList.setText(post.getSupporters() != null ? "Supporters count: " + String.valueOf(post.getSupporters().size()) : "Supporters count: 0");
         holder.fundingBar.setProgress(post.getFundingPercentage());
 
         // Handle "View Profile" button click

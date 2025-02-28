@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/off_white"
-    tools:context=".utils.Fragments.ProfileFragment">
+    tools:context=".utils.Fragments.DogProfile">
 
     <ImageButton
         android:id="@+id/dogBackBtn"
@@ -48,34 +48,12 @@
                     android:layout_height="wrap_content"
                     android:text="Dog Name"
                     android:layout_gravity="left"
-                    android:textColor="@color/primary_color"
+                    android:textColor="#233E9D"
                     android:textSize="40sp"
                     android:layout_marginBottom="5dp"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/dogAgeTV"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Dog Age"
-                    android:layout_gravity="left"
-                    android:textColor="@color/primary_color"
-                    android:layout_marginBottom="5dp"
-                    android:textSize="25sp"
-                    android:textStyle="bold"/>
-
-                <TextView
-                    android:id="@+id/dogGenderTV"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Dog Gender"
-                    android:layout_gravity="left"
-                    android:textColor="@color/primary_color"
-                    android:layout_marginBottom="5dp"
-                    android:textSize="25sp"
-                    android:textStyle="bold"/>
-
-                <TextView
+            <TextView
                     android:id="@+id/descriptionTV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -83,7 +61,7 @@
                     android:layout_gravity="left"
                     android:text="Description"
                     android:textSize="17sp"
-                    android:textColor="@color/primary_color"
+                    android:textColor="#233E9D"
                     android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
@@ -97,6 +75,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="Monthly Funding"
+        android:textColor="@color/black"
         android:textStyle="bold" />
 
     <ProgressBar
@@ -119,6 +98,7 @@
         android:layout_below="@id/funding_bar_profile"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
+        android:textColor="@color/white"
         android:text="Donate" />
 
     <ImageButton

@@ -25,6 +25,7 @@
         android:layout_marginTop="8dp"
         android:text="Dog Name"
         android:textSize="24sp"
+        android:textColor="@color/black"
         android:textStyle="bold" />
 
     <!-- Dog's Sex -->
@@ -34,6 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="Sex: Male"
+        android:textColor="@color/black"
         android:textSize="16sp" />
 
     <!-- Dog's Estimated Age -->
@@ -43,6 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="Estimated Age: 3 years"
+        android:textColor="@color/black"
         android:textSize="16sp" />
 
     <TextView
@@ -58,7 +61,8 @@
         android:id="@+id/supporters_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="John, Sarah, Alex"
+        android:text="Supporters count: "
+        android:textColor="@color/black"
         android:textSize="14sp" />
 
     <!-- Monthly Funding Progress Bar -->
@@ -67,7 +71,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Monthly Funding"
-        android:textStyle="bold"/>
+        android:textColor="@color/black"
+        android:textStyle="bold" />
 
     <ProgressBar
         android:id="@+id/funding_bar"
@@ -84,7 +89,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="View profile" />
+        android:text="View profile"
+        android:textColor="@color/white"/>
 
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/profileDevider"

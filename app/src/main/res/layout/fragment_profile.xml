@@ -8,9 +8,9 @@
     tools:context=".utils.Fragments.ProfileFragment">
 
     <androidx.appcompat.widget.Toolbar
+        android:id="@+id/profile_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:id="@+id/profile_toolbar"
         android:layout_alignParentTop="true"
         app:contentInsetStart="0dp"
         app:contentInsetEnd="0dp"
@@ -21,30 +21,38 @@
             android:background="@color/primary_color"
             android:padding="10dp">
 
+            <ImageButton
+                android:id="@+id/back_profile"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/baseline_arrow_back_24" />
+
             <TextView
-                android:id="@+id/UserName"
+                android:id="@+id/mainAppName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Username"
+                android:text="Profile"
                 android:textSize="22sp"
                 android:textColor="@color/white"
                 android:textStyle="bold"
-                android:layout_marginStart="10dp"
-                android:layout_centerInParent="true"/>
+                android:layout_marginStart="50dp"
+                android:layout_centerVertical="true" />
 
             <ImageButton
-                android:id="@+id/settingsIcon"
+                android:id="@+id/settings_profile"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="10dp"
                 android:background="@drawable/circular_bg"
                 android:backgroundTint="@color/primary_color"
-                android:src="@drawable/settings_icon"
                 android:scrollbarSize="30dp"
+                android:src="@drawable/settings_icon"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
                 app:tint="@color/white" />
         </RelativeLayout>
-
     </androidx.appcompat.widget.Toolbar>
 
     <LinearLayout
@@ -62,6 +70,7 @@
             app:civ_border_width="1dp"
             android:src="@drawable/user_icon"
             android:layout_margin="14dp"/>
+
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -98,6 +107,7 @@
 
         </RelativeLayout>
 
+
     </LinearLayout>
 
     <RelativeLayout
@@ -124,6 +134,7 @@
                     android:layout_marginStart="70dp"
                     android:layout_centerInParent="true"
                     android:text="Folowers"
+                    android:textColor="@color/black"
                     android:textSize="20dp"
                     android:textStyle="bold" />
 
@@ -137,6 +148,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/black"
                     android:text="Posts"
                     android:textStyle="bold"
                     android:textSize="20dp"
@@ -162,6 +174,7 @@
                 <TextView
                     android:id="@+id/folower_countTv"
                     android:layout_width="wrap_content"
+                    android:textColor="@color/black"
                     android:layout_height="wrap_content"
                     android:text="100"
                     android:textStyle="bold"
@@ -179,6 +192,7 @@
                     android:id="@+id/post_counttv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/black"
                     android:text="100"
                     android:textStyle="bold"
                     android:layout_centerInParent="true"
@@ -197,6 +211,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="5dp"
         android:text="Follow"
+        android:textColor="@color/white"
         android:layout_centerInParent="true"
         android:layout_below="@id/UserFolowersPosts"/>
 

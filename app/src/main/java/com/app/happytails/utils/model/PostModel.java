@@ -16,6 +16,14 @@ public class PostModel {
     public PostModel() {
     }
 
+    public ArrayList<String> getSupporters() {
+        return supporters;
+    }
+
+    public void setSupporters(ArrayList<String> supporters) {
+        this.supporters = supporters;
+    }
+
     public PostModel(String dogId, int dogAge, String dogGender, String dogName, int fundingProgress, String mainImageUrl, ArrayList<String> supporters) {
         this.dogAge = dogAge;
         this.dogGender = dogGender;
@@ -58,9 +66,6 @@ public class PostModel {
 
     public String getMainImage() { return mainImage; }
     public void setMainImage(String mainImage) { this.mainImage = mainImage; }
-
-    public ArrayList<String> getSupportersList() { return supporters; }
-    public void setSupportersList(ArrayList<String> supporters) { this.supporters = supporters; }
 
     public String getDescription() {
         return description;

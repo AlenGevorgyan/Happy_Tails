@@ -8,14 +8,16 @@
     android:background="@color/off_white"
     tools:context=".utils.SearchActivity">
 
+    <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
+        android:id="@+id/search_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:id="@+id/search_toolbar"
         android:layout_alignParentTop="true"
         app:contentInsetStart="0dp"
         app:contentInsetEnd="0dp"
         android:background="@color/primary_color">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -42,45 +44,37 @@
                 android:layout_toEndOf="@id/BacktoMain"
                 android:layout_marginStart="10dp"
                 android:layout_centerVertical="true" />
+        </RelativeLayout>
+    </androidx.appcompat.widget.Toolbar>
 
+        <RelativeLayout
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/search_toolbar"
+            android:layout_margin="10dp">
+
+            <EditText
+                android:id="@+id/search_user_EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:hint="Search"
+                android:padding="10dp"
+                android:elevation="10dp"
+                android:background="@drawable/edit_text_rounded_corner" />
 
         </RelativeLayout>
 
-    </androidx.appcompat.widget.Toolbar>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:id="@+id/toolbar"
-        android:layout_below="@id/search_toolbar">
-
-        <EditText
-            android:id="@+id/search_user_EditText"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/searchResult"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:hint="Search"
-            android:padding="10dp"
-            android:elevation="10dp"
-            android:layout_toLeftOf="@id/searchUserButton"
-            android:background="@drawable/edit_text_rounded_corner" />
-        <ImageButton
-            android:id="@+id/searchUserButton"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/search_icon_s"
-            android:layout_centerVertical="true"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:layout_alignParentEnd="true" />
+            android:layout_below="@id/toolbar"
+            android:padding="10dp" />
 
-    </RelativeLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/searchResult"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/toolbar"
-        android:padding="10dp" />
-
+        <FrameLayout
+            android:id="@+id/search_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 </RelativeLayout>
