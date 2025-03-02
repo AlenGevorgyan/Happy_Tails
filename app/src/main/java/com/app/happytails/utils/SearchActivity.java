@@ -79,9 +79,7 @@ public class SearchActivity extends AppCompatActivity implements ProfileFragment
 
     private void setupSearchRecyclerView(String searchTerm) {
         Query query = FirebaseUtil.allUserCollectionReference()
-                .orderBy("username")
-                .startAt(searchTerm)
-                .endAt(searchTerm + "\uf8ff");
+                .whereGreaterThanOrEqualTo("username", searchTerm);
 
         FirestoreRecyclerOptions<UserModel> options = new FirestoreRecyclerOptions.Builder<UserModel>()
                 .setQuery(query, UserModel.class)

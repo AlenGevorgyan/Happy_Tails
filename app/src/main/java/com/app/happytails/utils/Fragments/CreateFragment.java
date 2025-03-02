@@ -38,11 +38,13 @@ public class CreateFragment extends Fragment {
 
     private FirebaseAuth auth;
     private FirebaseFirestore db;
+    private double fundingAmount;
 
-    private String dogName, dogAge, dogGender, description;
+    private String dogName, dogAge, dogGender, description, patreonUrl;
     private Uri mainImageUri;
     private ArrayList<Uri> galleryUris;
     private ArrayList<String> supportersList;
+    private ArrayList<String>  productsList;
 
     public CreateFragment() {
         // Required empty public constructor
@@ -72,6 +74,11 @@ public class CreateFragment extends Fragment {
             description = getArguments().getString("description");
             mainImageUri = getArguments().getParcelable("mainImageUri");
             galleryUris = getArguments().getParcelableArrayList("galleryUris");
+            patreonUrl = getArguments().getString("patreonUrl");
+            fundingAmount = getArguments().getDouble("fundingAmount");
+            productsList = getArguments().getStringArrayList("donationAmounts");
+
+
 
             Toast.makeText(getContext(), "Data received: " + dogName, Toast.LENGTH_SHORT).show();
         }
@@ -100,7 +107,6 @@ public class CreateFragment extends Fragment {
                             public void onSuccess(String requestId, Map resultData) {
                                 galleryImageUrls.add(resultData.get("url").toString());
                                 if (galleryImageUrls.size() == galleryUris.size()) {
-                                    // After all gallery images are uploaded, upload the main image
                                     uploadMainImage();
                                 }
                             }
@@ -116,7 +122,6 @@ public class CreateFragment extends Fragment {
                         }).dispatch();
             }
         } else {
-            // If no gallery images, directly upload the main image
             uploadMainImage();
         }
     }
@@ -182,7 +187,10 @@ public class CreateFragment extends Fragment {
                 diagnosis,
                 clinicName,
                 doctorName,
-                visitDate
+                visitDate,
+                patreonUrl,
+                fundingAmount,
+                productsList
         );
         Log.d("CreateFragment", "Saving post to Firestore - Dog ID: " + dogId);
 

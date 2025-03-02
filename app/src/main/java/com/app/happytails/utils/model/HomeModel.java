@@ -17,9 +17,36 @@ public class HomeModel {
     private String clinicName;
     private String doctorName;
     private String vetLastVisitDate;
+    private String patreonUrl;
+    private double fundingAmount;
+    private ArrayList<String> donationsAmount;
 
     // Empty constructor for Firestore
     public HomeModel() {
+    }
+
+    public double getFundingAmount() {
+        return fundingAmount;
+    }
+
+    public void setFundingAmount(double fundingAmount) {
+        this.fundingAmount = fundingAmount;
+    }
+
+    public String getPatreonUrl() {
+        return patreonUrl;
+    }
+
+    public void setPatreonUrl(String patreonUrl) {
+        this.patreonUrl = patreonUrl;
+    }
+
+    public ArrayList<String> getDonationsAmount() {
+        return donationsAmount;
+    }
+
+    public void setDonationsAmount(ArrayList<String> donationsAmount) {
+        this.donationsAmount = donationsAmount;
     }
 
     public HomeModel(String creator, String dogId, int dogAge, String dogGender, String dogName, int fundingProgress, String mainImageUrl, ArrayList<String> supporters) {
@@ -37,7 +64,7 @@ public class HomeModel {
     public HomeModel(String creator, String dogId, int dogAge, String dogGender, String dogName,
                      int fundingPercentage, ArrayList<String> galleryImages, String mainImage,
                      ArrayList<String> supporters, String description, String diagnosis,
-                     String clinicName, String doctorName, String vetLastVisitDate) {
+                     String clinicName, String doctorName, String vetLastVisitDate, String patreonUrl, double fundingAmount, ArrayList<String> donationsAmount) {
         this.creator = creator;
         this.dogAge = dogAge;
         this.dogGender = dogGender;
@@ -52,6 +79,9 @@ public class HomeModel {
         this.clinicName = clinicName;
         this.doctorName = doctorName;
         this.vetLastVisitDate = vetLastVisitDate;
+        this.patreonUrl = patreonUrl;
+        this.fundingAmount = fundingAmount;
+        this.donationsAmount = donationsAmount;
     }
 
     // Getters and setters

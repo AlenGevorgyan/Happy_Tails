@@ -42,27 +42,27 @@
             android:orientation="vertical"
             android:layout_gravity="center">
 
-                <TextView
-                    android:id="@+id/dogNameTV"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Dog Name"
-                    android:layout_gravity="left"
-                    android:textColor="#233E9D"
-                    android:textSize="40sp"
-                    android:layout_marginBottom="5dp"
-                    android:textStyle="bold" />
+            <TextView
+                android:id="@+id/dogNameTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dog Name"
+                android:layout_gravity="left"
+                android:textColor="#233E9D"
+                android:textSize="40sp"
+                android:layout_marginBottom="5dp"
+                android:textStyle="bold" />
 
             <TextView
-                    android:id="@+id/descriptionTV"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:layout_gravity="left"
-                    android:text="Description"
-                    android:textSize="17sp"
-                    android:textColor="#233E9D"
-                    android:textStyle="bold" />
+                android:id="@+id/descriptionTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:layout_gravity="left"
+                android:text="Description"
+                android:textSize="17sp"
+                android:textColor="#233E9D"
+                android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
 
@@ -90,9 +90,8 @@
         android:progress="75"
         android:progressDrawable="@drawable/progress_bar_custom" />
 
-    <!-- Follow or Settings Button -->
     <Button
-        android:id="@+id/followBtn"
+        android:id="@+id/donateBtn"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_below="@id/funding_bar_profile"
@@ -116,7 +115,7 @@
         android:id="@+id/dogProfileDevider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@id/followBtn"
+        android:layout_below="@id/donateBtn"
         android:layout_marginTop="25dp"
         app:dividerColor="@color/gray" />
 

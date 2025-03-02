@@ -1,6 +1,7 @@
 package com.app.happytails.utils.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,7 +21,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.happytails.R;
 import com.app.happytails.utils.Adapters.PostAdapter;
+import com.app.happytails.utils.AndroidUtil;
+import com.app.happytails.utils.ChatActivity;
 import com.app.happytails.utils.model.PostModel;
+import com.app.happytails.utils.model.UserModel;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -42,7 +46,7 @@ public class ProfileFragment extends Fragment {
     private TextView statusTv, followingCountTv, postCountTv, username;
     private CircleImageView profileImage;
     private RecyclerView recyclerView;
-    private ImageButton settingsBtn, back_profile;
+    private ImageButton settingsBtn, back_profile, chatBtn;
     private Button followBtn;
     private FirebaseUser currentUser;
     private PostAdapter postAdapter;
@@ -72,7 +76,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        listener = null; // Prevent memory leaks
+        listener = null;
     }
 
     @Override
@@ -101,6 +105,7 @@ public class ProfileFragment extends Fragment {
         followBtn = view.findViewById(R.id.subscribeBtn);
         settingsBtn = view.findViewById(R.id.settings_profile);
         back_profile = view.findViewById(R.id.back_profile);
+        chatBtn = view.findViewById(R.id.chatBtn);
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
@@ -109,15 +114,41 @@ public class ProfileFragment extends Fragment {
 
         if (profileUid != null && profileUid.equals(currentUserId)) {
             followBtn.setVisibility(View.GONE);
+            chatBtn.setVisibility(View.GONE);
             settingsBtn.setVisibility(View.VISIBLE);
         } else {
             followBtn.setVisibility(View.VISIBLE);
             settingsBtn.setVisibility(View.GONE);
+            chatBtn.setVisibility(View.VISIBLE);
         }
 
         back_profile.setOnClickListener(v -> handleBackPress());
 
         settingsBtn.setOnClickListener(v -> openSettingsFragment());
+
+        chatBtn.setOnClickListener(v -> navigateToTheChat());
+    }
+
+    private void navigateToTheChat(){
+        if (getActivity() != null) {
+            Intent intent = new Intent(getActivity(), ChatActivity.class);
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            DocumentReference userRef = db.collection("users").document(profileUid);
+            userRef.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful() && task.getResult() != null) {
+                    UserModel model = task.getResult().toObject(UserModel.class);
+                    if (model != null) {
+                        AndroidUtil.passUserModelAsIntent(intent, model);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    } else {
+                        Log.e(TAG, "User model not found");
+                    }
+                } else {
+                    Log.e(TAG, "Failed to load user data for chat");
+                }
+            });
+        }
     }
 
     private void handleBackPress() {

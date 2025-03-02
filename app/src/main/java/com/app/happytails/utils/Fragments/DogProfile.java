@@ -1,5 +1,8 @@
 package com.app.happytails.utils.Fragments;
 
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -17,18 +20,19 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.app.AlertDialog;
+import androidx.activity.OnBackPressedCallback;
 
 import com.app.happytails.R;
-import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
-import com.google.firebase.firestore.MetadataChanges;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -37,14 +41,17 @@ public class DogProfile extends Fragment {
     private TextView dogNameTv;
     private TextView dogDescriptionTv;
     private ProgressBar fundingProgress;
-    private Button followBtn;
-    private ImageButton settingsBtn, backBtn;
+    private Button donateBtn;
+    private ImageButton backBtn;
     private CircleImageView dogImage;
     private BottomNavigationView navigationView;
-    private FrameLayout frameLayout;
+    private String creatorLink;
+    private String dogId;
+    private FirebaseFirestore db;
+    private ArrayList<String> productNames = new ArrayList<>();
+    private ArrayList<String> productLinks = new ArrayList<>();
 
-    private String userId;
-    private String dogId, clinicName, doctorName, lastVisitDate, diagnosis, gender;
+    private String clinicName, doctorName, lastVisitDate, diagnosis, gender;
     private long age;
     private ListenerRegistration dogListener;
     private ArrayList<String> galleryImageUrls, supporters;
@@ -54,18 +61,15 @@ public class DogProfile extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dog_profile, container, false);
 
-        // Initialize views
         dogNameTv = view.findViewById(R.id.dogNameTV);
         dogDescriptionTv = view.findViewById(R.id.descriptionTV);
         fundingProgress = view.findViewById(R.id.funding_bar_profile);
-        followBtn = view.findViewById(R.id.followBtn);
-        settingsBtn = view.findViewById(R.id.settingsBtn);
-        backBtn = view.findViewById(R.id.dogBackBtn);
-        navigationView = view.findViewById(R.id.dogBottomNavigation);
+        donateBtn = view.findViewById(R.id.donateBtn);
         dogImage = view.findViewById(R.id.dogProfileImage);
-        frameLayout = view.findViewById(R.id.dog_fragment_container);
+        navigationView = view.findViewById(R.id.dogBottomNavigation);
+        backBtn = view.findViewById(R.id.dogBackBtn);
 
-        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        db = FirebaseFirestore.getInstance();
 
         if (getArguments() != null) {
             dogId = getArguments().getString("dogId");
@@ -77,57 +81,58 @@ public class DogProfile extends Fragment {
             Toast.makeText(getContext(), "Dog ID is missing", Toast.LENGTH_SHORT).show();
         }
 
+        donateBtn.setOnClickListener(v -> openDonationDialog());
+
         navigationView.setOnNavigationItemSelectedListener(this::handleNavigation);
-
-        backBtn.setOnClickListener(v -> handleBackButton());
-
-        navigationView.setSelectedItemId(R.id.galleryMenu);
-        loadDefaultFragment();
+        backBtn.setOnClickListener(v -> handleBackPress());
 
         return view;
     }
 
     private void loadDogData() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference dogRef = db.collection("dogs").document(dogId);
 
-        dogListener = dogRef.addSnapshotListener(MetadataChanges.INCLUDE, (snapshot, e) -> {
+        dogListener = dogRef.addSnapshotListener((snapshot, e) -> {
             if (e != null) {
                 Toast.makeText(getContext(), "Error loading data", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (snapshot != null && snapshot.exists()) {
-                Map<String, Object> data = snapshot.getData();
-                if (data != null) {
-                    String name = (String) data.get("dogName");
-                    age = (long) data.get("dogAge");
-                    gender = (String) data.get("dogGender");
-                    String description = (String) data.get("description");
-                    String creatorId = (String) data.get("creator");
-                    String profileImageUrl = (String) data.get("mainImage");
-                    long fundingPercentage = (long) data.get("fundingPercentage");
-                    galleryImageUrls = (ArrayList<String>) data.get("galleryImages");
-                    clinicName = (String) data.get("clinicName");
-                    doctorName = (String) data.get("doctorName");
-                    lastVisitDate = (String) data.get("vetLastVisitDate");
-                    diagnosis = (String) data.get("diagnosis");
-                    supporters = (ArrayList<String>) data.get("supporters");
+                String dogName = (String) snapshot.get("dogName");
+                String dogDescription = (String) snapshot.get("description");
+                age = (long) snapshot.get("dogAge");
+                gender = (String) snapshot.get("dogGender");
+                creatorLink = (String) snapshot.get("patreonUrl");
+                ArrayList<String> productList = (ArrayList<String>) snapshot.get("productsList");
+                String profileImageUrl = (String) snapshot.get("mainImage");
+                long fundingPercentage = (long) snapshot.get("fundingPercentage");
 
-                    dogNameTv.setText(name);
-                    dogDescriptionTv.setText(description);
-                    fundingProgress.setProgress((int) fundingPercentage);
+                galleryImageUrls = (ArrayList<String>) snapshot.get("galleryImages");
+                clinicName = (String) snapshot.get("clinicName");
+                doctorName = (String) snapshot.get("doctorName");
+                lastVisitDate = (String) snapshot.get("vetLastVisitDate");
+                diagnosis = (String) snapshot.get("diagnosis");
+                supporters = (ArrayList<String>) snapshot.get("supporters");
 
-                    if (profileImageUrl != null && !profileImageUrl.isEmpty()) {
-                        Glide.with(getContext()).load(profileImageUrl).into(dogImage);
-                    }
+                // Set data to views
+                dogNameTv.setText(dogName);
+                dogDescriptionTv.setText(dogDescription);
+                fundingProgress.setProgress((int) fundingPercentage);
 
-                    if (userId.equals(creatorId)) {
-                        followBtn.setVisibility(View.GONE);
-                        settingsBtn.setVisibility(View.VISIBLE);
-                    } else {
-                        followBtn.setVisibility(View.VISIBLE);
-                        settingsBtn.setVisibility(View.GONE);
+                // Load dog profile image
+                if (profileImageUrl != null && !profileImageUrl.isEmpty()) {
+                    Glide.with(getContext()).load(profileImageUrl).into(dogImage);
+                }
+
+                // Fetch product names and links
+                if (productList != null) {
+                    productNames.clear();
+                    productLinks.clear();
+
+                    for (String productUrl : productList) {
+                        productNames.add(extractProductName(productUrl));
+                        productLinks.add(productUrl);
                     }
                 }
             } else {
@@ -136,12 +141,46 @@ public class DogProfile extends Fragment {
         });
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (dogListener != null) {
-            dogListener.remove();
+    private void handleBackPress() {
+        if (getParentFragmentManager().getBackStackEntryCount() > 0) {
+            getParentFragmentManager().popBackStack();
+        } else {
+            requireActivity().onBackPressed();
         }
+    }
+
+    public static String extractProductName(String url) {
+        String pattern = "/shop/([a-zA-Z\\-0-9]+)";
+
+        Pattern compiledPattern = Pattern.compile(pattern);
+        Matcher matcher = compiledPattern.matcher(url);
+
+        if (matcher.find()) {
+            String productName = matcher.group(1);
+            return productName.replaceAll("[\\d\\-]", " ").replaceAll("\\b\\w{1,2}\\b", "").trim(); // Remove 1 or 2 character words too
+        } else {
+            return "Unknown Product";
+        }
+    }
+
+    private void openDonationDialog() {
+        if (productNames.isEmpty()) {
+            Toast.makeText(getContext(), "No products available for donation", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        new AlertDialog.Builder(getContext())
+                .setTitle("Choose a Product to Donate")
+                .setItems(productNames.toArray(new String[0]), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String donationUrl = productLinks.get(which);
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(donationUrl));
+                        startActivity(browserIntent);
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
     private boolean handleNavigation(@NonNull MenuItem item) {
@@ -182,13 +221,6 @@ public class DogProfile extends Fragment {
         return false;
     }
 
-    private void handleBackButton() {
-        FragmentManager fragmentManager = getParentFragmentManager();
-        if (fragmentManager.getBackStackEntryCount() > 0) {
-            fragmentManager.popBackStack();
-        }
-    }
-
     private void loadFragment(Fragment fragment) {
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -197,13 +229,11 @@ public class DogProfile extends Fragment {
         fragmentTransaction.commit();
     }
 
-    private void loadDefaultFragment() {
-        Fragment fragment = new GalleryFragment();
-        if (galleryImageUrls != null) {
-            Bundle bundle = new Bundle();
-            bundle.putStringArrayList("galleryImageUrls", galleryImageUrls);
-            fragment.setArguments(bundle);
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (dogListener != null) {
+            dogListener.remove();
         }
-        loadFragment(fragment);
     }
 }

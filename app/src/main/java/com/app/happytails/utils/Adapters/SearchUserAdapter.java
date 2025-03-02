@@ -13,7 +13,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.app.happytails.R;
 import com.app.happytails.utils.Fragments.ProfileFragment;
-import com.app.happytails.utils.SearchActivity; // Import SearchActivity
+import com.app.happytails.utils.SearchActivity;
 import com.app.happytails.utils.model.UserModel;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -32,7 +32,6 @@ public class SearchUserAdapter extends FirestoreRecyclerAdapter<UserModel, Searc
 
     @Override
     protected void onBindViewHolder(@NonNull UserModelViewHolder holder, int position, @NonNull UserModel model) {
-        // Bind user data to the views
         holder.usernameText.setText(model.getUsername());
         Glide.with(context)
                 .load(model.getUserImage())
@@ -40,9 +39,7 @@ public class SearchUserAdapter extends FirestoreRecyclerAdapter<UserModel, Searc
                 .error(R.drawable.user_icon)
                 .into(holder.profilePic);
 
-        // Handle item click
         holder.itemView.setOnClickListener(v -> {
-            // Create and navigate to ProfileFragment
             ProfileFragment profileFragment = new ProfileFragment();
             Bundle bundle = new Bundle();
             bundle.putString("creator", model.getUserId());

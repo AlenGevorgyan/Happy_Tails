@@ -89,12 +89,12 @@ public class CreateFragment2 extends Fragment {
         bundle.putParcelable("mainImageUri", mainImageUri);
         bundle.putParcelableArrayList("galleryUris", galleryUris);
 
-        CreateFragment createFragment = new CreateFragment();
-        createFragment.setArguments(bundle);
+        PatreonFragment patreonFragment = new PatreonFragment();
+        patreonFragment.setArguments(bundle);
 
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, createFragment);
+        fragmentTransaction.replace(R.id.fragment_container, patreonFragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }

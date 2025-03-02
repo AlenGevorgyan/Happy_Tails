@@ -213,13 +213,24 @@
         android:text="Follow"
         android:textColor="@color/white"
         android:layout_centerInParent="true"
-        android:layout_below="@id/UserFolowersPosts"/>
+        android:layout_below="@id/UserFolowersPosts"/>]
+
+    <ImageButton
+        android:id="@+id/chatBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/baseline_chat_bubble_24"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/subscribeBtn"/>
 
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/profileDevider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@id/subscribeBtn"
+        android:layout_below="@id/chatBtn"
         android:layout_marginTop="25dp"
         android:layout_marginBottom="8dp"
         app:dividerColor="@color/gray" />

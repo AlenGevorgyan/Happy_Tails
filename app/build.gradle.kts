@@ -41,6 +41,7 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-storage")
+    implementation("com.google.firebase:firebase-messaging:24.1.0")
 
     // Firebase UI
     implementation("com.firebaseui:firebase-ui-firestore:8.0.2")
@@ -58,6 +59,7 @@ dependencies {
 
     // Image loading with Glide (make sure to use the latest version)
     implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation(libs.activity)
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
 
     // Fragment KTX for Kotlin extensions
@@ -73,4 +75,17 @@ dependencies {
 
     // Payment API (ensure the correct version)
     implementation("com.stripe:stripe-java:28.2.0")
+
+    implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0")
+
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    // OkHttp for making network requests to Patreon API
+    implementation("com.squareup.okhttp3:okhttp:4.9.0")
+
+    implementation("com.android.volley:volley:1.2.1")
+
+    implementation("com.google.android.gms:play-services-auth:20.1.0")
 }
