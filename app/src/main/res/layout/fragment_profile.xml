@@ -110,99 +110,93 @@
 
     </LinearLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/UserFolowersPosts"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="10dp"
-        android:layout_below="@id/UserInfo">
+        android:layout_below="@id/UserInfo"
+        android:weightSum="3">
 
         <LinearLayout
-            android:id="@+id/folow_PostLl"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/folower_Tv"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="50">
+                android:text="Followers"
+                android:textColor="@color/black"
+                android:textSize="18dp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="70dp"
-                    android:layout_centerInParent="true"
-                    android:text="Folowers"
-                    android:textColor="@color/black"
-                    android:textSize="20dp"
-                    android:textStyle="bold" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/folower_countTv"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="50">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="Posts"
-                    android:textStyle="bold"
-                    android:textSize="20dp"
-                    android:layout_centerInParent="true"
-                    android:layout_marginStart="70dp"/>
-
-            </RelativeLayout>
+                android:textColor="@color/black"
+                android:text="100"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/folow_tv"
-            android:layout_width="match_parent"
-            android:weightSum="100"
-            android:layout_below="@id/folow_PostLl"
-            android:layout_height="wrap_content">
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/following_Tv"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="50">
+                android:text="Following"
+                android:textColor="@color/black"
+                android:textSize="18dp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/folower_countTv"
-                    android:layout_width="wrap_content"
-                    android:textColor="@color/black"
-                    android:layout_height="wrap_content"
-                    android:text="100"
-                    android:textStyle="bold"
-                    android:layout_centerInParent="true"
-                    android:layout_marginStart="70dp"/>
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/following_countTv"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="50">
-
-                <TextView
-                    android:id="@+id/post_counttv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="100"
-                    android:textStyle="bold"
-                    android:layout_centerInParent="true"
-                    android:layout_marginStart="70dp"/>
-
-            </RelativeLayout>
+                android:textColor="@color/black"
+                android:text="100"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
-    </RelativeLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Posts"
+                android:textColor="@color/black"
+                android:textSize="18dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/post_counttv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="100"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/subscribeBtn"
@@ -213,7 +207,7 @@
         android:text="Follow"
         android:textColor="@color/white"
         android:layout_centerInParent="true"
-        android:layout_below="@id/UserFolowersPosts"/>]
+        android:layout_below="@id/UserFolowersPosts"/>
 
     <ImageButton
         android:id="@+id/chatBtn"

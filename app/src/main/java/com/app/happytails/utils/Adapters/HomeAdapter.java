@@ -55,11 +55,12 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
         // Set dog details
         holder.dogName.setText(post.getDogName() != null ? post.getDogName() : "No Data");
-        holder.dogAge.setText(post.getDogAge() != 0 ? "Age: " + post.getDogAge() : "No Data");
-        holder.dogGender.setText(post.getDogGender() != null ? "Gender: " + post.getDogGender() : "No Data");
         holder.supportersList.setText(post.getSupporters() != null ?
                 "Supporters count: " + String.valueOf(post.getSupporters().size()) : "Supporters count: 0");
         holder.fundingBar.setProgress(post.getFundingPercentage());
+
+        // Set urgency level
+        holder.urgencyLevel.setText("Urgency Level: " + post.getUrgencylevel());
 
         // Fetch and set creator's details (username and picture)
         DocumentReference userRef = FirebaseFirestore.getInstance().collection("users").document(post.getCreator());
@@ -120,7 +121,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
 
     static class HomeViewHolder extends RecyclerView.ViewHolder {
         CircleImageView dogPic, creatorImage;
-        TextView dogName, dogAge, dogGender, supportersList, creatorName;
+        TextView dogName, supportersList, creatorName, urgencyLevel;
         ProgressBar fundingBar;
         Button viewProfile;
 
@@ -128,13 +129,12 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
             super(itemView);
             dogPic = itemView.findViewById(R.id.post_picture_home);
             dogName = itemView.findViewById(R.id.dog_name_home);
-            dogAge = itemView.findViewById(R.id.dog_age_home);
-            dogGender = itemView.findViewById(R.id.dog_sex_home);
             supportersList = itemView.findViewById(R.id.supporters_list_home);
             fundingBar = itemView.findViewById(R.id.funding_bar_home);
             viewProfile = itemView.findViewById(R.id.view_profile);
             creatorImage = itemView.findViewById(R.id.post_user_image);
             creatorName = itemView.findViewById(R.id.usernameTv);
+            urgencyLevel = itemView.findViewById(R.id.urgency_level_home);
         }
     }
 }

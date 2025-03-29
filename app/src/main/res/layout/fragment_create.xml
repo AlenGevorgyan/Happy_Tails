@@ -1,97 +1,190 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/primary_color"
-    android:fillViewport="true">
+    android:background="@color/secondary_color"
+    android:fitsSystemWindows="true">
 
-    <LinearLayout
+    <!-- Fixed Toolbar (Outside ScrollView) -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/createPostMenu"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp"
-        android:gravity="center"
-        android:background="@color/secondary_color">
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/primary_color"
+        app:contentInsetStart="0dp"
+        app:contentInsetEnd="0dp"
+        android:elevation="4dp">
 
-        <!-- Main CircleImageView -->
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/mainProfileImage"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_marginVertical="10dp"
-            android:src="@drawable/baseline_add_24"
-            app:civ_border_color="@color/dark_gray"
-            app:civ_border_width="2dp" />
-
-        <!-- Divider -->
-        <com.google.android.material.divider.MaterialDivider
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="10dp" />
+            android:layout_height="match_parent"
+            android:background="@color/primary_color"
+            android:padding="10dp">
 
-        <!-- Dog Information Fields -->
-        <EditText
-            android:id="@+id/dogName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Dog Name"
-            android:layout_marginTop="10dp" />
+            <TextView
+                android:id="@+id/createPostTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create Dog Account"
+                android:textSize="22sp"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:layout_marginStart="10dp"
+                android:layout_centerVertical="true" />
+        </RelativeLayout>
+    </androidx.appcompat.widget.Toolbar>
 
-        <EditText
-            android:id="@+id/dogAge"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Dog Age"
-            android:inputType="number"
-            android:layout_marginTop="10dp" />
+    <!-- Scrollable Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/createPostMenu"
+        android:fillViewport="true">
 
-        <EditText
-            android:id="@+id/dogGender"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Dog Gender"
-            android:layout_marginTop="10dp" />
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:gravity="center">
 
-        <EditText
-            android:id="@+id/descriptionED"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Description"
-            android:layout_marginTop="10dp" />
+            <!-- Profile Image -->
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/mainProfileImage"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginVertical="10dp"
+                android:src="@drawable/baseline_add_24"
+                app:civ_border_color="@color/secondary_color"
+                app:civ_border_width="1dp" />
 
-        <TextView
-            android:id="@+id/galleryTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Dog Gallery"
-            android:textColor="@color/black"
-            android:gravity="center" />
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="10dp" />
 
-        <!-- Image Uploads -->
-        <ImageView
-            android:id="@+id/dogPic"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginTop="10dp"
-            android:src="@drawable/baseline_add_24" />
+            <!-- Dog Name -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_dog_name"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Dog Name"
+                app:boxBackgroundColor="@color/white"
+                app:errorEnabled="true">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/dogGallery"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/dog_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:inputType="textCapWords"
+                    android:maxLines="1" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
-            android:id="@+id/postNextBtn"
-            android:layout_width="350dp"
-            android:layout_height="wrap_content"
-            android:text="Next"
-            android:textStyle="bold"
-            android:textSize="20dp"
-            android:padding="10dp"
-            android:layout_marginTop="10dp"
-            android:backgroundTint="@color/primary_color"
-            android:textColor="@android:color/white" />
-    </LinearLayout>
-</ScrollView>
+            <!-- Dog Description -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_dog_description"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="156dp"
+                android:hint="Dog Description"
+                app:boxBackgroundColor="@color/white"
+                app:errorEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/dog_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:gravity="top"
+                    android:inputType="textMultiLine"
+                    android:scrollbars="vertical" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Urgency Level -->
+            <TextView
+                android:id="@+id/urgencyLevelTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Urgency Level"
+                android:textColor="@color/primary_color"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:gravity="center" />
+
+            <SeekBar
+                android:id="@+id/urgencySeekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:progressDrawable="@drawable/custom_seek_bar"
+                android:thumbTint="@color/colorPrimaryDark"
+                android:thumb="@drawable/custom_thumb"
+                android:max="10" />
+
+            <TextView
+                android:id="@+id/urgencyLevelValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Urgency Level: 0"
+                android:textColor="@color/primary_color"
+                android:textSize="16sp"
+                android:gravity="center" />
+
+            <!-- Gallery Section -->
+            <TextView
+                android:id="@+id/galleryTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Dog Gallery"
+                android:textColor="@color/primary_color"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:gravity="center" />
+
+            <!-- Image Upload Preview -->
+            <ImageView
+                android:id="@+id/dogPic"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="10dp"
+                android:contentDescription="Dog image preview"
+                android:src="@drawable/baseline_add_24" />
+
+            <!-- Gallery RecyclerView -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/dogGallery"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+            <!-- Action Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/postNextBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginHorizontal="20dp"
+                android:text="Next"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:cornerRadius="8dp"
+                app:iconPadding="8dp"
+                android:backgroundTint="@color/primary_color" />
+
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/dog_gender"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:entries="@array/gender_options"
+                android:inputType="none"
+                android:paddingStart="12dp"
+                android:paddingEnd="8dp" />
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

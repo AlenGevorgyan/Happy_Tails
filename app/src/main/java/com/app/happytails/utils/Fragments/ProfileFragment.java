@@ -23,7 +23,9 @@ import com.app.happytails.R;
 import com.app.happytails.utils.Adapters.PostAdapter;
 import com.app.happytails.utils.AndroidUtil;
 import com.app.happytails.utils.ChatActivity;
-import com.app.happytails.utils.model.PostModel;
+import com.app.happytails.utils.FollowersActivity;
+import com.app.happytails.utils.FollowingsActivity;
+import com.app.happytails.utils.model.HomeModel;
 import com.app.happytails.utils.model.UserModel;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,11 +41,13 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+
 public class ProfileFragment extends Fragment {
 
     private static final String TAG = "ProfileFragment";
+    private static final String ARG_CONTAINER_ID = "container_id";
 
-    private TextView statusTv, followingCountTv, postCountTv, username;
+    private TextView statusTv, followingCountTv, postCountTv, username, followerCountTv, followerTv, followingTv;
     private CircleImageView profileImage;
     private RecyclerView recyclerView;
     private ImageButton settingsBtn, back_profile, chatBtn;
@@ -52,6 +56,9 @@ public class ProfileFragment extends Fragment {
     private PostAdapter postAdapter;
     private String profileUid;
     private String currentUserId;
+
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private Context context;
 
     public interface OnFragmentInteractionListener {
         void onProfileFragmentClosed();
@@ -63,9 +70,18 @@ public class ProfileFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public static ProfileFragment newInstance(int containerId) {
+        ProfileFragment fragment = new ProfileFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_CONTAINER_ID, containerId);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+        this.context = context;
         if (context instanceof OnFragmentInteractionListener) {
             listener = (OnFragmentInteractionListener) context;
         } else {
@@ -76,28 +92,48 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        context = null;
         listener = null;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_profile, container, false);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         // Initialize views
         init(view);
         loadBasicData();
         setupRecyclerView();
         loadUserPosts();
+
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Set up click listeners
+        followerTv.setOnClickListener(v -> openFollowersActivity());
+        followingTv.setOnClickListener(v -> openFollowingActivity());
+    }
+
+    private void openFollowersActivity() {
+        Intent intent = new Intent(getActivity(), FollowersActivity.class);
+        intent.putExtra("userId", profileUid);
+        startActivity(intent);
+    }
+
+    private void openFollowingActivity() {
+        Intent intent = new Intent(getActivity(), FollowingsActivity.class);
+        intent.putExtra("userId", profileUid);
+        startActivity(intent);
     }
 
     private void init(View view) {
         statusTv = view.findViewById(R.id.statusTV);
-        followingCountTv = view.findViewById(R.id.folower_countTv);
+        followerCountTv = view.findViewById(R.id.folower_countTv);
+        followingCountTv = view.findViewById(R.id.following_countTv);
         postCountTv = view.findViewById(R.id.post_counttv);
         profileImage = view.findViewById(R.id.profileImage);
         recyclerView = view.findViewById(R.id.recyclerViewProfile);
@@ -106,6 +142,8 @@ public class ProfileFragment extends Fragment {
         settingsBtn = view.findViewById(R.id.settings_profile);
         back_profile = view.findViewById(R.id.back_profile);
         chatBtn = view.findViewById(R.id.chatBtn);
+        followerTv = view.findViewById(R.id.folower_Tv);
+        followingTv = view.findViewById(R.id.following_Tv);
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
@@ -120,19 +158,18 @@ public class ProfileFragment extends Fragment {
             followBtn.setVisibility(View.VISIBLE);
             settingsBtn.setVisibility(View.GONE);
             chatBtn.setVisibility(View.VISIBLE);
+            checkIfFollowing();
         }
 
         back_profile.setOnClickListener(v -> handleBackPress());
-
         settingsBtn.setOnClickListener(v -> openSettingsFragment());
-
         chatBtn.setOnClickListener(v -> navigateToTheChat());
+        followBtn.setOnClickListener(v -> handleFollowButtonClick());
     }
 
-    private void navigateToTheChat(){
+    private void navigateToTheChat() {
         if (getActivity() != null) {
             Intent intent = new Intent(getActivity(), ChatActivity.class);
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
             DocumentReference userRef = db.collection("users").document(profileUid);
             userRef.get().addOnCompleteListener(task -> {
                 if (task.isSuccessful() && task.getResult() != null) {
@@ -161,43 +198,54 @@ public class ProfileFragment extends Fragment {
     }
 
     private void openSettingsFragment() {
+        int containerId = getArguments() != null ? getArguments().getInt(ARG_CONTAINER_ID, R.id.fragment_container) : R.id.fragment_container;
+
         FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, new UserSettingsFragment());
+        transaction.replace(containerId, new UserSettingsFragment());
         transaction.addToBackStack(null);
         transaction.commit();
     }
 
     private void loadBasicData() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference userRef = db.collection("users").document(profileUid);
 
         userRef.addSnapshotListener((value, error) -> {
             if (error != null) {
-                Toast.makeText(getContext(), "Error loading profile data", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Error loading profile data", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Error loading profile data", error);
                 return;
             }
 
             if (value != null && value.exists()) {
                 String name = value.getString("username");
-                Long followers = value.getLong("followers");
-                Long posts = value.getLong("posts");
+                List<String> followersList = (List<String>) value.get("followers");
+                List<String> followingsList = (List<String>) value.get("followings");
+                int followerCount = (followersList != null) ? followersList.size() : 0;
+                int followingsCount = (followingsList != null) ? followingsList.size() : 0;
+                Long posts = value.getLong("postCount");
                 String profileURL = value.getString("userImage");
                 String status = value.getString("status");
 
                 username.setText(name != null ? name : "Unknown");
                 statusTv.setText(status != null ? status : "No status");
-                followingCountTv.setText(String.valueOf(followers != null ? followers : 0));
+                followerCountTv.setText(String.valueOf(followerCount));
+                followingCountTv.setText(String.valueOf(followingsCount));
                 postCountTv.setText(String.valueOf(posts != null ? posts : 0));
 
                 if (profileURL != null && !profileURL.isEmpty()) {
-                    Glide.with(requireContext())
+                    Glide.with(context)
                             .load(profileURL)
                             .placeholder(R.drawable.user_icon)
                             .error(R.drawable.user_icon)
                             .into(profileImage);
                 } else {
                     profileImage.setImageResource(R.drawable.user_icon);
+                }
+
+                if (followersList != null && followersList.contains(currentUserId)) {
+                    followBtn.setText("Unfollow");
+                } else {
+                    followBtn.setText("Follow");
                 }
             } else {
                 Log.d(TAG, "No profile data found for UID: " + profileUid);
@@ -207,31 +255,128 @@ public class ProfileFragment extends Fragment {
 
     private void setupRecyclerView() {
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
     }
 
     private void loadUserPosts() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
         Query query = db.collection("dogs")
                 .whereEqualTo("creator", profileUid);
 
         query.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                List<PostModel> postList = new ArrayList<>();
+                List<HomeModel> postList = new ArrayList<>();
                 QuerySnapshot querySnapshot = task.getResult();
                 if (querySnapshot != null) {
                     for (DocumentSnapshot document : querySnapshot.getDocuments()) {
-                        PostModel post = document.toObject(PostModel.class);
+                        HomeModel post = document.toObject(HomeModel.class);
                         if (post != null) {
                             postList.add(post);
                         }
                     }
                 }
-                postAdapter = new PostAdapter(requireContext(), postList);
+                postAdapter = new PostAdapter(context, postList);
                 recyclerView.setAdapter(postAdapter);
             } else {
-                Toast.makeText(getContext(), "Error loading posts", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Error loading posts", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Error loading posts", task.getException());
+            }
+        });
+    }
+
+    private void checkIfFollowing() {
+        DocumentReference userRef = db.collection("users").document(profileUid);
+        userRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                DocumentSnapshot documentSnapshot = task.getResult();
+                if (documentSnapshot.exists()) {
+                    List<String> followers = (List<String>) documentSnapshot.get("followers");
+                    if (followers != null && followers.contains(currentUserId)) {
+                        followBtn.setText("Unfollow");
+                    } else {
+                        followBtn.setText("Follow");
+                    }
+                }
+            }
+        });
+    }
+
+    private void handleFollowButtonClick() {
+        DocumentReference userRef = db.collection("users").document(profileUid);
+        DocumentReference otherUserRef = db.collection("users").document(currentUserId);
+        userRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                DocumentSnapshot documentSnapshot = task.getResult();
+                if (documentSnapshot.exists()) {
+                    List<String> followers = (List<String>) documentSnapshot.get("followers");
+                    if (followers == null) {
+                        followers = new ArrayList<>();
+                    }
+                    if (followers.contains(currentUserId)) {
+                        followers.remove(currentUserId);
+                        List<String> finalFollowers = followers;
+                        userRef.update("followers", followers).addOnCompleteListener(updateTask -> {
+                            if (updateTask.isSuccessful()) {
+                                followBtn.setText("Follow");
+                                followerCountTv.setText(String.valueOf(finalFollowers.size()));
+                            } else {
+                                Toast.makeText(context, "Error unfollowing", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                        otherUserRef.get().addOnCompleteListener(otherTask -> {
+                            if (otherTask.isSuccessful() && otherTask.getResult() != null) {
+                                DocumentSnapshot otherUserSnapshot = otherTask.getResult();
+                                if (otherUserSnapshot.exists()) {
+                                    List<String> followings = (List<String>) otherUserSnapshot.get("followings");
+                                    if (followings == null) {
+                                        followings = new ArrayList<>();
+                                    }
+                                    followings.remove(profileUid);
+                                    List<String> finalFollowings = followings;
+                                    otherUserRef.update("followings", followings).addOnCompleteListener(otherUpdateTask -> {
+                                        if (otherUpdateTask.isSuccessful()) {
+                                            followingCountTv.setText(String.valueOf(finalFollowings.size()));
+                                        } else {
+                                            Toast.makeText(context, "Error updating followings", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    } else {
+                        followers.add(currentUserId);
+                        List<String> finalFollowers1 = followers;
+                        userRef.update("followers", followers).addOnCompleteListener(updateTask -> {
+                            if (updateTask.isSuccessful()) {
+                                followBtn.setText("Unfollow");
+                                followerCountTv.setText(String.valueOf(finalFollowers1.size()));
+                            } else {
+                                Toast.makeText(context, "Error following", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                        otherUserRef.get().addOnCompleteListener(otherTask -> {
+                            if (otherTask.isSuccessful() && otherTask.getResult() != null) {
+                                DocumentSnapshot otherUserSnapshot = otherTask.getResult();
+                                if (otherUserSnapshot.exists()) {
+                                    List<String> followings = (List<String>) otherUserSnapshot.get("followings");
+                                    if (followings == null) {
+                                        followings = new ArrayList<>();
+                                    }
+                                    followings.add(profileUid);
+                                    List<String> finalFollowings = followings;
+                                    otherUserRef.update("followings", followings).addOnCompleteListener(otherUpdateTask -> {
+                                        if (otherUpdateTask.isSuccessful()) {
+                                            followingCountTv.setText(String.valueOf(finalFollowings.size()));
+                                        } else {
+                                            Toast.makeText(context, "Error updating followings", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
             }
         });
     }

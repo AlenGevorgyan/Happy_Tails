@@ -30,9 +30,9 @@ public class LoginOtpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login_otp);
 
         firebaseAuth = FirebaseAuth.getInstance();
-        progressBar = findViewById(R.id.otpProgBar);
-        verifyButton = findViewById(R.id.verifyButton);
-        backButton = findViewById(R.id.BacktoLogIn);
+        progressBar = findViewById(R.id.progress_loading_otp);
+        verifyButton = findViewById(R.id.btn_verify);
+        backButton = findViewById(R.id.btn_back_otp);
 
         email = getIntent().getStringExtra("email");
         username = getIntent().getStringExtra("username");

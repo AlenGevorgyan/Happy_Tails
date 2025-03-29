@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.app.happytails.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -23,7 +24,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 public class ForgetPassword extends AppCompatActivity {
 
     private Button recoverBtn;
-    private EditText emailEt;
+    private TextInputEditText emailEt;
     private ImageButton backBtn;
     private FirebaseAuth auth;
     private FirebaseFirestore firestore;
@@ -39,10 +40,10 @@ public class ForgetPassword extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
 
-        backBtn = findViewById(R.id.BacktoSignInF);
-        recoverBtn = findViewById(R.id.forgotButton);
-        emailEt = findViewById(R.id.emailEditTextF);
-        progBar = findViewById(R.id.recoverProgBar);
+        backBtn = findViewById(R.id.btn_back_forget);
+        recoverBtn = findViewById(R.id.btn_verify_forget);
+        emailEt = findViewById(R.id.edit_email_forget);
+        progBar = findViewById(R.id.progress_loading_forget);
         progBar.setVisibility(View.GONE);
 
         backBtn.setOnClickListener(v -> onBackPressed());

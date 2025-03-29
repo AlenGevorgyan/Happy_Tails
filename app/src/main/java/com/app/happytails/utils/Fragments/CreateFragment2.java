@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,18 +23,24 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.happytails.R;
 import com.app.happytails.utils.Adapters.GalleryAdapter;
+import com.app.happytails.utils.model.HomeModel;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
 public class CreateFragment2 extends Fragment {
 
-    private EditText dogName, dogAge, dogGender, descriptionED;
+    private EditText dogName, descriptionED;
     private ImageView dogGalleryPic, dogPic;
     private Button nextButton;
     private RecyclerView recyclerView;
     private Uri mainImageUri;
     private final ArrayList<Uri> galleryUris = new ArrayList<>();
     private GalleryAdapter galleryAdapter;
+    private SeekBar urgencySeekBar;
+    private TextView urgencyLevelValue;
+    private int urgencyLevel = 0;
 
     public CreateFragment2() {
         // Required empty public constructor
@@ -48,14 +56,14 @@ public class CreateFragment2 extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        dogName = view.findViewById(R.id.dogName);
-        dogAge = view.findViewById(R.id.dogAge);
-        dogGender = view.findViewById(R.id.dogGender);
-        descriptionED = view.findViewById(R.id.descriptionED);
+        dogName = view.findViewById(R.id.dog_name);
+        descriptionED = view.findViewById(R.id.dog_description);
         dogPic = view.findViewById(R.id.mainProfileImage);
         dogGalleryPic = view.findViewById(R.id.dogPic);
         recyclerView = view.findViewById(R.id.dogGallery);
         nextButton = view.findViewById(R.id.postNextBtn);
+        urgencySeekBar = view.findViewById(R.id.urgencySeekBar);
+        urgencyLevelValue = view.findViewById(R.id.urgencyLevelValue);
 
         // Setup RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -68,33 +76,61 @@ public class CreateFragment2 extends Fragment {
         // Handle image selection
         dogPic.setOnClickListener(v -> openMainImageGallery());
         dogGalleryPic.setOnClickListener(v -> openGalleryForDogImages());
+
+        // Handle urgency level changes
+        urgencySeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                urgencyLevel = progress;
+                urgencyLevelValue.setText("Urgency Level: " + urgencyLevel);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
     }
 
     private void handleNextButtonClick() {
         String name = dogName.getText().toString();
-        String age = dogAge.getText().toString();
-        String gender = dogGender.getText().toString();
         String description = descriptionED.getText().toString();
+        String creatorId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        if (name.isEmpty() || age.isEmpty() || gender.isEmpty() || description.isEmpty()) {
+        if (name.isEmpty() || description.isEmpty()) {
             Toast.makeText(getContext(), "Fill all fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        Bundle bundle = new Bundle();
-        bundle.putString("dogName", name);
-        bundle.putString("dogAge", age);
-        bundle.putString("dogGender", gender);
-        bundle.putString("description", description);
-        bundle.putParcelable("mainImageUri", mainImageUri);
-        bundle.putParcelableArrayList("galleryUris", galleryUris);
+        // Create a new dog document in Firestore
+        createDogInFirestore(creatorId, name, description, urgencyLevel);
+    }
 
-        PatreonFragment patreonFragment = new PatreonFragment();
-        patreonFragment.setArguments(bundle);
+    private void createDogInFirestore(String creatorId, String name, String description, int urgencyLevel) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+        String dogId = db.collection("dogs").document().getId();
+        ArrayList<String> galleryImages = new ArrayList<>();
+        for (Uri uri : galleryUris) {
+            galleryImages.add(uri.toString());
+        }
+
+        HomeModel dog = new HomeModel(creatorId, dogId, name, 0, galleryImages, mainImageUri != null ? mainImageUri.toString() : "", new ArrayList<>(), 0.0, new ArrayList<>(), urgencyLevel);
+
+        db.collection("dogs").document(dogId).set(dog)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(getContext(), "Dog account created successfully!", Toast.LENGTH_SHORT).show();
+                    navigateToHomeFragment();
+                })
+                .addOnFailureListener(e -> Toast.makeText(getContext(), "Failed to create dog account", Toast.LENGTH_SHORT).show());
+    }
+
+    private void navigateToHomeFragment() {
         FragmentManager fragmentManager = getParentFragmentManager();
+        Fragment homeFragment = new HomeFragment();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, patreonFragment);
+        fragmentTransaction.replace(R.id.fragment_container, homeFragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
@@ -133,7 +169,6 @@ public class CreateFragment2 extends Fragment {
                     galleryUris.add(data.getData());
                 }
 
-                // Notify the adapter that the data has changed
                 galleryAdapter.notifyDataSetChanged();
             }
         }

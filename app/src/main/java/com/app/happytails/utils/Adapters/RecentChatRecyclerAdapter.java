@@ -2,6 +2,7 @@ package com.app.happytails.utils.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +37,7 @@ public class RecentChatRecyclerAdapter extends FirestoreRecyclerAdapter<Chatroom
                         if (otherUserModel != null) {
                             FirebaseUtil.getOtherProfileImage(otherUserModel.getUserId()).addOnCompleteListener(imageTask -> {
                                 if (imageTask.isSuccessful() && imageTask.getResult() != null) {
-                                    AndroidUtil.setProfilePic(holder.profilePic.getContext(), imageTask.getResult(), holder.profilePic);
+                                    AndroidUtil.setProfilePic(holder.profilePic.getContext(), Uri.parse(imageTask.getResult()), holder.profilePic);
                                 } else {
                                     holder.profilePic.setImageResource(R.drawable.user_icon);
                                 }

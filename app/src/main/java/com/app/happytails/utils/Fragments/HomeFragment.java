@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.app.happytails.R;
 import com.app.happytails.utils.Adapters.HomeAdapter;
 import com.app.happytails.utils.model.HomeModel;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -66,7 +65,7 @@ public class HomeFragment extends Fragment {
                     return;
                 }
 
-                if (queryDocumentSnapshots != null && !queryDocumentSnapshots.isEmpty()) {
+                if (queryDocumentSnapshots != null) {
                     postList.clear();
                     for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
                         HomeModel post = mapDocumentToHomeModel(doc);
@@ -90,16 +89,9 @@ public class HomeFragment extends Fragment {
             // Fetch all values safely
             String creator = doc.getString("creator");
             String dogName = doc.getString("dogName");
-            String dogGender = doc.getString("dogGender");
-            int dogAge = doc.contains("dogAge") ? doc.getLong("dogAge").intValue() : 0;
-            String description = doc.getString("description");
             String mainImageUrl = doc.getString("mainImage");
-            String diagnosis = doc.getString("diagnosis");
-            String clinicName = doc.getString("clinicName");
-            String doctorName = doc.getString("doctorName");
-            String vetLastVisitDate = doc.getString("vetLastVisitDate");
+            int urgencyLevel = doc.getLong("urgencylevel") != null ? doc.getLong("urgencylevel").intValue() : 0;
 
-            // Get gallery images safely
             ArrayList<String> galleryImageUrls = doc.contains("galleryImages") ?
                     (ArrayList<String>) doc.get("galleryImages") : new ArrayList<>();
 
@@ -115,12 +107,11 @@ public class HomeFragment extends Fragment {
             return new HomeModel(
                     creator,
                     dogId,
-                    dogAge,
-                    dogGender,
                     dogName,
                     fundingProgress,
                     mainImageUrl,
-                    supporters
+                    supporters,
+                    urgencyLevel
             );
         } catch (Exception e) {
             Log.e(TAG, "Error mapping Firestore document to HomeModel: " + e.getMessage());

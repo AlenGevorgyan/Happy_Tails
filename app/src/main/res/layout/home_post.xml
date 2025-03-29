@@ -61,25 +61,16 @@
             android:textSize="24sp"
             android:textStyle="bold" />
 
-        <!-- Dog's Sex -->
+        <!-- Urgency Level -->
         <TextView
-            android:id="@+id/dog_sex_home"
+            android:id="@+id/urgency_level_home"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Sex: Male"
+            android:layout_marginTop="8dp"
+            android:text="Urgency Level: 0"
             android:textColor="@color/black"
-            android:textSize="16sp" />
-
-        <!-- Dog's Estimated Age -->
-        <TextView
-            android:id="@+id/dog_age_home"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Estimated Age: 3 years"
-            android:textColor="@color/black"
-            android:textSize="16sp" />
+            android:textSize="18sp" />
 
         <!-- Supporters List -->
         <TextView

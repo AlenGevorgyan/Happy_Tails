@@ -1,13 +1,14 @@
 package com.app.happytails.utils.model;
 
 import com.google.firebase.Timestamp;
+import java.util.List;
 
 public class UserModel {
     private String username;
     private String email;
     private String userId;
 
-    private int followers;
+    private List<String> followers, followings;
     private int posts;
     private Timestamp createdTimestamp;
 
@@ -21,7 +22,7 @@ public class UserModel {
     public UserModel() {
     }
 
-    public UserModel(Timestamp createdTimestamp, String username, String email, String userId, String userImage, String public_id, int followers, int posts, String status) {
+    public UserModel(Timestamp createdTimestamp, String username, String email, String userId, String userImage, List<String> followers, List<String> followings, int posts, String status) {
         this.createdTimestamp = createdTimestamp;
         this.username = username;
         this.email = email;
@@ -30,6 +31,15 @@ public class UserModel {
         this.posts = posts;
         this.userImage = userImage;
         this.status = status;
+        this.followings = followings;
+    }
+
+    public List<String> getFollowings() {
+        return followings;
+    }
+
+    public void setFollowings(List<String> followings) {
+        this.followings = followings;
     }
 
     public String getUserImage() {
@@ -40,12 +50,12 @@ public class UserModel {
         this.userImage = userImage;
     }
 
-    public int getFollowers() {
-        return followers;
+    public List<String> getFollowers() {
+        return followers;  // Get the list of followers
     }
 
-    public void setFollowers(int followers) {
-        this.followers = followers;
+    public void setFollowers(List<String> followers) {
+        this.followers = followers;  // Set the list of followers
     }
 
     public int getPosts() {

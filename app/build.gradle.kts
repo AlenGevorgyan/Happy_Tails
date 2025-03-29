@@ -37,7 +37,7 @@ dependencies {
     // Firebase BOM for version management
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
 
-    // Firebase libraries (no need to specify versions as the BOM takes care of it)
+    // Firebase libraries
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-storage")
@@ -57,12 +57,12 @@ dependencies {
     // Cloudinary
     implementation("com.cloudinary:cloudinary-android:3.0.2")
 
-    // Image loading with Glide (make sure to use the latest version)
+    // Image loading with Glide
     implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation(libs.activity)
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
 
-    // Fragment KTX for Kotlin extensions
+    // Fragment KTX
     implementation("androidx.fragment:fragment-ktx:1.8.5")
 
     // Unit Testing Libraries
@@ -70,22 +70,25 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
-    // CircleImageView for rounded image views
+    // CircleImageView for rounded images
     implementation("de.hdodenhof:circleimageview:3.1.0")
 
-    // Payment API (ensure the correct version)
-    implementation("com.stripe:stripe-java:28.2.0")
+    // 🔹 Stripe SDK for Payments
+    implementation("com.stripe:stripe-android:20.34.0")
 
-    implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0")
-
+    // 🔹 Retrofit for API Calls
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
-    // OkHttp for making network requests to Patreon API
+    // 🔹 JSON Handling (Gson)
+    implementation("com.google.code.gson:gson:2.10")
+
+    // OkHttp for making network requests
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
 
+    // Volley for Networking
     implementation("com.android.volley:volley:1.2.1")
 
+    // Google Sign-In
     implementation("com.google.android.gms:play-services-auth:20.1.0")
 }

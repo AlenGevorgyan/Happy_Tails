@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.app.happytails">
-    <!-- Basic Permissions -->
+    <!-- Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -11,6 +11,7 @@
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:required="false" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:name=".utils.CloudinaryUtil"
@@ -25,21 +26,22 @@
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.HappyTails">
         <activity
-            android:name=".utils.OAuthRedirectActivity"
+            android:name=".utils.FollowingsActivity"
             android:exported="false" />
         <activity
-            android:name=".utils.PatreonOAuthActivity"
-            android:exported="false" />
-        <activity
-            android:name=".utils.OAuthActivity"
-            android:exported="false" />
-        <activity
-            android:name=".utils.PatreonAuthActivity"
-            android:exported="false" />
-        <activity
-            android:name=".utils.ChatActivity"
+            android:name=".utils.FollowersActivity"
             android:exported="false" />
 
+        <service
+            android:name=".utils.FirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service> <!-- Chat Activity -->
+        <activity
+            android:name=".utils.ChatActivity"
+            android:exported="false" /> <!-- File Provider -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
@@ -48,7 +50,7 @@
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_path" />
-        </provider> <!-- Activities -->
+        </provider> <!-- Other Activities -->
         <activity
             android:name=".utils.ForgetPassword"
             android:exported="false" />
@@ -60,22 +62,7 @@
             android:exported="false" />
         <activity
             android:name=".utils.LoginOtpActivity"
-            android:exported="false" />
-        <activity
-            android:name=".utils.OAuthCallbackActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="patreon"
-                    android:path="/callback"
-                    android:scheme="happytails" />
-            </intent-filter>
-        </activity>
+            android:exported="false" /> <!-- Login Activity with Deep Linking -->
         <activity
             android:name=".utils.LoginActivity"
             android:exported="true">
@@ -89,7 +76,7 @@
                     android:host="happytails.page.link"
                     android:scheme="https" />
             </intent-filter>
-        </activity>
+        </activity> <!-- Splash Activity (Launcher) -->
         <activity
             android:name=".utils.SplashActivity"
             android:exported="true">
@@ -98,7 +85,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity> <!-- Main Activity -->
         <activity
             android:name=".utils.MainActivity"
             android:exported="false" />

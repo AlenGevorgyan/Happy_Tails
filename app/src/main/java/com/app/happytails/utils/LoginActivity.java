@@ -18,6 +18,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;
@@ -35,13 +38,13 @@ public class LoginActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
 
-        emailEditText = findViewById(R.id.emailEditText);
-        passwordEditText = findViewById(R.id.passwordEditText);
-        confirmPasswordEditText = findViewById(R.id.passwordConfirmEditText);
-        usernameEditText = findViewById(R.id.usernameEditText);
-        progressBar = findViewById(R.id.LoginProc1);
-        loginButton = findViewById(R.id.loginButton);
-        backToSignIn = findViewById(R.id.BacktoSignIn);
+        emailEditText = findViewById(R.id.edit_email);
+        passwordEditText = findViewById(R.id.edit_password);
+        confirmPasswordEditText = findViewById(R.id.edit_confirm_password);
+        usernameEditText = findViewById(R.id.edit_username);
+        progressBar = findViewById(R.id.progress_loading);
+        loginButton = findViewById(R.id.btn_create);
+        backToSignIn = findViewById(R.id.btn_back);
 
         backToSignIn.setOnClickListener(v -> navigateToSignIn());
         loginButton.setOnClickListener(v -> createUserAndSendVerification());
@@ -76,6 +79,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
     }
+
 
     private boolean validateInput(String email, String password, String confirmPassword, String username) {
         if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || username.isEmpty()) {
@@ -119,7 +123,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void saveUserToFirestore(FirebaseUser user, String username, String email) {
-        UserModel userModel = new UserModel(Timestamp.now(), username, email, user.getUid(), "", null, 0, 0, "No status");
+        List<String> followersList = new ArrayList<>();
+        List<String> followingsList = new ArrayList<>();
+
+        UserModel userModel = new UserModel(Timestamp.now(), username, email, user.getUid(), "", followersList, followingsList, 0, "No status");
 
         firestore.collection("users")
                 .document(user.getUid())

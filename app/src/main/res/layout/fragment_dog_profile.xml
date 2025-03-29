@@ -6,22 +6,52 @@
     android:background="@color/off_white"
     tools:context=".utils.Fragments.DogProfile">
 
-    <ImageButton
-        android:id="@+id/dogBackBtn"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/baseline_arrow_back_dog"
-        android:backgroundTint="@color/primary_color"/>
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/dog_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true"
+        app:contentInsetStart="0dp"
+        app:contentInsetEnd="0dp"
+        android:background="@color/primary_color">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/primary_color"
+            android:padding="10dp">
 
+            <TextView
+                android:id="@+id/mainAppName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dog Profile"
+                android:textSize="22sp"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:layout_marginStart="10dp"
+                android:layout_toRightOf="@id/dogBackBtn"
+                android:layout_centerVertical="true" />
+
+            <!-- Back Button -->
+            <ImageButton
+                android:id="@+id/dogBackBtn"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/baseline_arrow_back_dog"
+                android:layout_centerVertical="true"
+                android:tint="@color/white"/>
+        </RelativeLayout>
+    </androidx.appcompat.widget.Toolbar>
 
     <!-- User Info Section -->
     <LinearLayout
         android:id="@+id/UserInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/dogBackBtn"
+        android:layout_below="@id/dog_toolbar"
         android:orientation="horizontal"
         android:padding="10dp">
 
@@ -49,7 +79,7 @@
                 android:text="Dog Name"
                 android:layout_gravity="left"
                 android:textColor="#233E9D"
-                android:textSize="40sp"
+                android:textSize="30sp"
                 android:layout_marginBottom="5dp"
                 android:textStyle="bold" />
 
@@ -57,21 +87,46 @@
                 android:id="@+id/descriptionTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
+                android:maxLines="2"
                 android:layout_gravity="left"
                 android:text="Description"
-                android:textSize="17sp"
+                android:textSize="16sp"
                 android:textColor="#233E9D"
-                android:textStyle="bold" />
+                android:textStyle="italic"
+                android:layout_marginBottom="5dp" />
         </LinearLayout>
     </LinearLayout>
+
+    <!-- Urgency Level Section -->
+    <TextView
+        android:id="@+id/urgencyLevelLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/UserInfo"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Urgency Level"
+        android:textColor="@color/black"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/urgencyLevelValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/urgencyLevelLabel"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="5"
+        android:textColor="@color/primary_color"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <!-- Monthly Funding Section -->
     <TextView
         android:id="@+id/monthlyTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/UserInfo"
+        android:layout_below="@id/urgencyLevelValue"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="Monthly Funding"
@@ -98,21 +153,25 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
         android:textColor="@color/white"
-        android:text="Donate" />
+        android:text="Donate"
+        android:backgroundTint="@color/primary_color"
+        android:paddingHorizontal="32dp"/>
 
     <ImageButton
         android:id="@+id/settingsBtn"
-        android:layout_width="wrap_content"
+        android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_below="@id/funding_bar_profile"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="16dp"
         android:src="@drawable/settings_icon"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:visibility="gone" />
 
     <!-- Divider -->
     <com.google.android.material.divider.MaterialDivider
-        android:id="@+id/dogProfileDevider"
+        android:id="@+id/dogProfileDivider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/donateBtn"
@@ -124,7 +183,7 @@
         android:id="@+id/dogBottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_below="@id/dogProfileDevider"
+        android:layout_below="@id/dogProfileDivider"
         app:backgroundTint="@color/primary_color"
         app:itemIconTint="@color/secondary_color"
         app:itemActiveIndicatorStyle="?attr/selectableItemBackgroundBorderless"

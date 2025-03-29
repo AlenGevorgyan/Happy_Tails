@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.happytails.R;
 import com.app.happytails.utils.Fragments.DogProfile;
-import com.app.happytails.utils.model.PostModel;
+import com.app.happytails.utils.model.HomeModel;
 import com.bumptech.glide.Glide;
 
 import java.lang.ref.WeakReference;
@@ -25,10 +25,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
 
-    private List<PostModel> postList;
+    private List<HomeModel> postList;
     private WeakReference<Context> contextRef;
 
-    public PostAdapter(Context context, List<PostModel> postList) {
+    public PostAdapter(Context context, List<HomeModel> postList) {
         this.contextRef = new WeakReference<>(context);
         this.postList = postList;
     }
@@ -42,7 +42,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
-        PostModel post = postList.get(position);
+        HomeModel post = postList.get(position);
         Context context = contextRef.get();
 
         if (context == null) return;
@@ -57,12 +57,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         }
 
         holder.dogName.setText(post.getDogName() != null ? post.getDogName() : "No Data");
-        holder.dogAge.setText(post.getDogAge() != 0 ? "Age: " + post.getDogAge() : "No Data");
-        holder.dogGender.setText(post.getDogGender() != null ? "Gender: " + post.getDogGender() : "No Data");
-        holder.supportersList.setText(post.getSupporters() != null ? "Supporters count: " + String.valueOf(post.getSupporters().size()) : "Supporters count: 0");
+        holder.urgencyLevel.setText("Urgency Level: " + post.getUrgencylevel());
+        holder.supportersList.setText(post.getSupporters() != null ? "Supporters count: " + post.getSupporters().size() : "Supporters count: 0");
         holder.fundingBar.setProgress(post.getFundingPercentage());
 
-        // Handle "View Profile" button click
         holder.viewProfile.setOnClickListener(v -> {
             DogProfile fragment = new DogProfile();
             Bundle args = new Bundle();
@@ -87,20 +85,19 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     static class PostViewHolder extends RecyclerView.ViewHolder {
         CircleImageView dogPic;
-        TextView dogName, dogAge, dogGender, supportersList;
+        TextView dogName, urgencyLevel, supportersList;
         ProgressBar fundingBar;
         Button viewProfile;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            dogPic = itemView.findViewById(R.id.profile_picture);
+            dogPic = itemView.findViewById(R.id.post_picture);
             dogName = itemView.findViewById(R.id.dog_name);
-            dogAge = itemView.findViewById(R.id.dog_age);
-            dogGender = itemView.findViewById(R.id.dog_sex);
+            urgencyLevel = itemView.findViewById(R.id.urgency_level);
             supportersList = itemView.findViewById(R.id.supporters_list);
             fundingBar = itemView.findViewById(R.id.funding_bar);
-            viewProfile = itemView.findViewById(R.id.gallery_button);
+            viewProfile = itemView.findViewById(R.id.view_profile_p);
         }
     }
 }

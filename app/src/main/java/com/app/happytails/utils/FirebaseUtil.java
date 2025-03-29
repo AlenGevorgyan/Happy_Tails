@@ -70,4 +70,16 @@ public class FirebaseUtil {
             }
         });
     }
+
+    public static Task<String> getDogProfileImage(String dogId) {
+        DocumentReference docRef = FirebaseFirestore.getInstance().collection("dogs").document(dogId);
+        return docRef.get().continueWith(task -> {
+            if (task.isSuccessful() && task.getResult() != null && task.getResult().exists()) {
+                return task.getResult().getString("mainImage");
+            } else {
+                Log.d("FirebaseUtil", "No profile image found for user: " + dogId);
+                return null;
+            }
+        });
+    }
 }
